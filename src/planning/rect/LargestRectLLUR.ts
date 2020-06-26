@@ -20,11 +20,11 @@ export default class LargestRectLLUR implements LargestRectHeuristic {
         let bestArea: number = 0;
         let bestPerimeter: number = 0;
 
-        for (let y = input.search.y; y < input.search.h; y++) {
+        for (let y: number = input.search.y; y < input.search.h; y++) {
             let openWidth: number = 0;
             cache.update(y, input.search.w, input.matrix);
 
-            for (let x = input.search.x; x < input.search.w; x++) {
+            for (let x: number = input.search.x; x < input.search.w; x++) {
                 if (cache.get(x) > openWidth) {
                     stack.push(new NumberPair(x, openWidth));
                     openWidth = cache.get(x);

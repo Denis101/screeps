@@ -1,7 +1,7 @@
 import Matrix from "collection/Matrix";
 
 export default class TerrainConverter {
-    private static readonly ROOM_SIZE = 50;
+    private static readonly ROOM_SIZE: number = 50;
 
     public static toMatrix(raw: number[]): Matrix<number> | null {
         if (!raw || raw.length <= 0) {
@@ -9,9 +9,9 @@ export default class TerrainConverter {
         }
 
         const result: number[][] = [];
-        for (let y = 0; y < this.ROOM_SIZE; y++) {
+        for (let y: number = 0; y < this.ROOM_SIZE; y++) {
             result[y] = [];
-            for (let x = 0; x < this.ROOM_SIZE; x++) {
+            for (let x: number = 0; x < this.ROOM_SIZE; x++) {
                 const code: number = raw[y * this.ROOM_SIZE + x];
                 const unbuildable: number = code & TERRAIN_MASK_WALL ||
                     code & TERRAIN_MASK_LAVA;

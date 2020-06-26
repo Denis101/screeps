@@ -8,6 +8,17 @@
         "no-bitwise": false,
         "no-empty-interface": false,
         "forin": false,
+        "typedef": [
+            true,
+            "call-signature",
+            "parameter",
+            "arrow-parameter",
+            "variable-declaration",
+            "member-variable-declaration",
+            "property-declaration",
+            "object-destructuring",
+            "array-destructuring"
+        ],
         "interface-name": [
             true,
             "never-prefix"

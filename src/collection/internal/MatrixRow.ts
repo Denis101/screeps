@@ -19,11 +19,11 @@ export class MatrixRow<T> {
         return this.values.length;
     }
 
-    public map<R>(mapper: MapperFunc<T, R>): MatrixRow<R> {
+    public map<R>(mapper: Func<T, R>): MatrixRow<R> {
         return MatrixRow.map(this, mapper);
     }
 
-    public static map<T, R>(input: MatrixRow<T>, mapper: MapperFunc<T, R>): MatrixRow<R> {
+    public static map<T, R>(input: MatrixRow<T>, mapper: Func<T, R>): MatrixRow<R> {
         return new MatrixRow(input.width, input.values.map(mapper));
     }
 }

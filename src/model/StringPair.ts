@@ -13,7 +13,7 @@ export class StringPair extends MonoPair<string> {
         return StringPair.concatDelim(this, d);
     }
 
-    public static concatDelim(p: StringPair, d: string) {
+    public static concatDelim(p: StringPair, d: string): string {
         return `${p.x}${d}${p.y}`;
     }
 }

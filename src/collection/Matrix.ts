@@ -30,11 +30,11 @@ export default class Matrix<T> {
         return this.rows.length;
     }
 
-    public map<R>(mapper: MapperFunc<T, R>): Matrix<R> {
+    public map<R>(mapper: Func<T, R>): Matrix<R> {
         return Matrix.map(this, mapper);
     }
 
-    public static map<T, R>(input: Matrix<T>, mapper: MapperFunc<T, R>): Matrix<R> {
+    public static map<T, R>(input: Matrix<T>, mapper: Func<T, R>): Matrix<R> {
         return Matrix.fromRows<R>(input.rows.map((row: MatrixRow<T>) => row.map(mapper)));
     }
 

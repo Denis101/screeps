@@ -69,7 +69,7 @@ export default class Rect {
         );
     }
 
-    public static fromRoomPosition(roomPositions: RoomPositionPair) {
+    public static fromRoomPosition(roomPositions: RoomPositionPair): Rect {
         return new Rect(
             roomPositions.start.x,
             roomPositions.start.y,
