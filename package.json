@@ -1,0 +1,58 @@
+{
+  "name": "screeps",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "lint": "tslint -p tsconfig.json \"src/**/*.ts\"",
+    "build": "rollup -c",
+    "push:main": "rollup -c --environment DEST:main",
+    "push:pserver": "rollup -c --environment DEST:pserver",
+    "push:sim": "rollup -c --environment DEST:sim",
+    "test": "npm run test-unit",
+    "test:unit": "rollup -c rollup.test-unit-config.js && mocha dist/test-unit.bundle.js",
+    "test:integration": "echo 'todo'",
+    "watch:main": "rollup -cw --environment DEST:main",
+    "watch:pserver": "rollup -cw --environment DEST:pserver",
+    "watch:sim": "rollup -cw --environment DEST:sim"
+  },
+  "author": "",
+  "license": "ISC",
+  "engines": {
+    "node": "10.x"
+  },
+  "dependencies": {
+    "bson": "^4.0.4",
+    "redux": "^4.0.5",
+    "source-map": "^0.7.3"
+  },
+  "devDependencies": {
+    "@rollup/plugin-commonjs": "^13.0.0",
+    "@rollup/plugin-multi-entry": "^3.0.1",
+    "@rollup/plugin-node-resolve": "^8.1.0",
+    "@types/chai": "^4.2.11",
+    "@types/lodash": "^4.14.157",
+    "@types/mocha": "^7.0.2",
+    "@types/node": "^14.0.14",
+    "@types/screeps": "^3.1.2",
+    "@types/sinon": "^9.0.4",
+    "@types/sinon-chai": "^3.2.4",
+    "chai": "^4.2.0",
+    "lint-staged": "^10.2.11",
+    "lodash": "^4.17.15",
+    "mocha": "^8.0.1",
+    "prettier": "^2.0.5",
+    "rollup": "^2.18.0",
+    "rollup-plugin-buble": "^0.19.8",
+    "rollup-plugin-clear": "^2.0.7",
+    "rollup-plugin-nodent": "^0.2.2",
+    "rollup-plugin-screeps": "^1.0.0",
+    "rollup-plugin-typescript2": "^0.27.1",
+    "screeps-api": "^1.12.1",
+    "ts-node": "^8.10.2",
+    "tslint": "^6.1.2",
+    "tslint-config-prettier": "^1.18.0",
+    "tslint-plugin-prettier": "^2.3.0",
+    "typescript": "^3.9.5"
+  }
+}
