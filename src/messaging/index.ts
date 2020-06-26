@@ -1,4 +1,5 @@
 import container from 'inversify.config';
+import GameManager, * as GameManagerMeta from 'service/game/GameManager';
 import MemoryManager, * as MemoryManagerMeta from 'service/memory/MemoryManager';
 
 export namespace Messaging {
@@ -13,33 +14,37 @@ export namespace Messaging {
     export interface MessageSenderReceiver extends MessageSender, MessageReceiver { };
 
     export function sendMessage(sender: string, receiver: string, expire: number, payload: object): number {
+        const gameManager: GameManager =
+            container.get<GameManager>(GameManagerMeta.TYPE);
         const memoryManager: MemoryManager =
             container.get<MemoryManager>(MemoryManagerMeta.TYPE);
-        const AB: number = 1 - (Game.time & 1);
+        const AB: number = 1 - (gameManager.getTime() & 1);
 
-        if (memoryManager.getMemory().debug) {
+        if (memoryManager.isDebug()) {
             console.log(`Sending message on to ${receiver} on channel ${AB}`);
         }
 
-        if (!memoryManager.getMemory().messages[AB]) {
-            memoryManager.getMemory().messages[AB] = [];
+        if (!memoryManager.getMessages()[AB]) {
+            memoryManager.getMessages()[AB] = [];
         }
 
-        return memoryManager.getMemory().messages[AB].push(
+        return memoryManager.getMessages()[AB].push(
             new Message(
                 sender,
                 receiver,
-                Game.time + expire,
-                Game.time,
+                gameManager.getTime() + expire,
+                gameManager.getTime(),
                 payload));
     }
 
     export function receiveMessage(sender: string, tick: number, payload: object): boolean {
+        const gameManager: GameManager =
+            container.get<GameManager>(GameManagerMeta.TYPE);
         const memoryManager: MemoryManager =
             container.get<MemoryManager>(MemoryManagerMeta.TYPE);
-        const AB: number = Game.time & 1;
+        const AB: number = gameManager.getTime() & 1;
 
-        if (memoryManager.getMemory().debug) {
+        if (memoryManager.isDebug()) {
             console.log(`Receiving message ${JSON.stringify(payload)} on channel ${AB}`);
         }
 

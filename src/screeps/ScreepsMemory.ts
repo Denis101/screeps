@@ -1,6 +1,6 @@
 import { Messaging } from "messaging";
 
 export default interface ScreepsMemory extends Memory {
-    debug: string;
+    debug: boolean;
     messages: Messaging.Message[][];
 }
