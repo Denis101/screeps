@@ -1,3 +1,5 @@
+import { injectable } from 'inversify';
+
 import Stack from 'collection/Stack';
 import MatrixCache from 'collection/MatrixCache';
 
@@ -7,8 +9,6 @@ import NumberPair from 'model/NumberPair';
 import LargestRectInput from './model/LargestRectInput';
 import LargestRectOutput from './model/LargestRectOutput';
 import { LargestRectHeuristic } from './LargestRectHeuristic';
-import { injectable } from 'inversify';
-import RoomVisualUtils from 'utils/RoomVisualUtils';
 
 /**
  * Lower Left Upper Right

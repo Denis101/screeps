@@ -42,4 +42,20 @@ export default class RoomVisualUtils {
             { fill: "green" }
         );
     }
+
+    public static drawPath(path: PathStep[], color: string): void {
+        return RoomVisualUtils.drawPathInRoom(new RoomVisual(), path, color);
+    }
+
+    public static drawPathInRoom(
+        roomVisual: RoomVisual,
+        path: PathStep[],
+        color: string
+    ): void {
+        for (let i: number = 1; i < path.length; i++) {
+            roomVisual.line(path[i - 1].x, path[i - 1].y, path[i].x, path[i].y, {
+                color
+            });
+        }
+    }
 }

@@ -59,13 +59,13 @@ export class _SpawnLRSDHeuristic implements SpawnLRSDHeuristic {
                 continue;
             }
 
-            // const path: PathStep[] = input.room.findPath(centre, controller.pos);
-            // pathTotal += path.length;
+            const path: PathStep[] = input.room.findPath(centre, controller.pos);
+            pathTotal += path.length;
 
-            // for (const src of sources) {
-            //     const srcPath: PathStep[] = input.room.findPath(centre, src.pos);
-            //     pathTotal += srcPath.length;
-            // }
+            for (const src of sources) {
+                const srcPath: PathStep[] = input.room.findPath(centre, src.pos);
+                pathTotal += srcPath.length;
+            }
 
             pathTotals.push(pathTotal);
         }
@@ -73,11 +73,8 @@ export class _SpawnLRSDHeuristic implements SpawnLRSDHeuristic {
         let currentMinPath: number = 0;
         let currentMin: number = 0;
         for (let i: number = 0; i < pathTotals.length; i++) {
-            const rect: Rect = rects[i];
-            const pathTotal = pathTotals[i];
-
-            if (pathTotal < currentMinPath) {
-                currentMinPath = pathTotal;
+            if (pathTotals[i] < currentMinPath) {
+                currentMinPath = pathTotals[i];
                 currentMin = i;
             }
         }

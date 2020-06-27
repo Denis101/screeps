@@ -38,10 +38,21 @@ export default class PrimaryProcessor implements Processor {
     process(): void {
         const timingResult: TimerOutput = new Timer().timeExecution(() => {
             for (const kv of this.gameManager.getRooms()) {
+                const room: Room = kv.value;
                 const output: SpawnLocationOutput = this.spawnLocationFinder.find(
-                    new SpawnLocationInput(kv.value, new RectParameters(133, 1)));
+                    new SpawnLocationInput(room, new RectParameters(133, 1)));
                 RoomVisualUtils.drawPoint(new NumberPair(output.location.x, output.location.y));
                 RoomVisualUtils.drawRect(output.rect);
+
+                const controller: StructureController | undefined = room.controller;
+                if (!controller) {
+                    continue;
+                }
+
+                RoomVisualUtils.drawPath(room.findPath(output.location, controller.pos), 'green');
+                for (const src of room.find(FIND_SOURCES)) {
+                    RoomVisualUtils.drawPath(room.findPath(output.location, src.pos), 'yellow');
+                }
             }
 
             // todo; main loop
