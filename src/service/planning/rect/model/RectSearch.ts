@@ -26,6 +26,14 @@ export default class RectSearch {
         return this._searchArea.h;
     }
 
+    public get area(): number {
+        return this._searchArea.area;
+    }
+
+    public get perimeter(): number {
+        return this._searchArea.perimeter;
+    }
+
     public static fromRect(rect: Rect): RectSearch {
         return new RectSearch(rect);
     }
@@ -40,6 +48,10 @@ export default class RectSearch {
 
     public static fromCoords(x1: number, y1: number, x2: number, y2: number): RectSearch {
         return RectSearch.fromPairs(new NumberPair(x1, y1), new NumberPair(x2, y2));
+    }
+
+    public static fromRectCoords(x1: number, y1: number, x2: number, y2: number): RectSearch {
+        return RectSearch.fromRect(new Rect(x1, y1, x2, y2));
     }
 
     public static fromRoomPosition(positions: RoomPositionPair): RectSearch {

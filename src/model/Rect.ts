@@ -58,6 +58,13 @@ export default class Rect {
         return this._size.sum();
     }
 
+    public get centre(): NumberPair {
+        return new NumberPair(
+            Math.floor(this.x + (this.w / 2)),
+            Math.floor(this.y + (this.h / 2)),
+        );
+    }
+
     public toRoomPosition(roomName: string): RoomPositionPair {
         return Rect.toRoomPosition(this, roomName);
     }

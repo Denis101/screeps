@@ -1,6 +1,6 @@
 import container from 'inversify.config';
-import GameManager, * as GameManagerMeta from 'service/game/GameManager';
-import MemoryManager, * as MemoryManagerMeta from 'service/memory/MemoryManager';
+import { GameManager, TYPE_GAME_MANAGER } from 'service/GameManager';
+import { MemoryManager, TYPE_MEMORY_MANAGER } from 'service/MemoryManager';
 
 export namespace Messaging {
     export interface MessageReceiver {
@@ -15,20 +15,20 @@ export namespace Messaging {
 
     export function sendMessage(sender: string, receiver: string, expire: number, payload: object): number {
         const gameManager: GameManager =
-            container.get<GameManager>(GameManagerMeta.TYPE);
+            container.get<GameManager>(TYPE_GAME_MANAGER);
         const memoryManager: MemoryManager =
-            container.get<MemoryManager>(MemoryManagerMeta.TYPE);
+            container.get<MemoryManager>(TYPE_MEMORY_MANAGER);
         const AB: number = 1 - (gameManager.getTime() & 1);
 
         if (memoryManager.isDebug()) {
             console.log(`Sending message on to ${receiver} on channel ${AB}`);
         }
 
-        if (!memoryManager.getMessages()[AB]) {
-            memoryManager.getMessages()[AB] = [];
+        if (!memoryManager.getMessageChannel(AB)) {
+            memoryManager.setMessageChannel(AB, []);
         }
 
-        return memoryManager.getMessages()[AB].push(
+        return memoryManager.getMessageChannel(AB).push(
             new Message(
                 sender,
                 receiver,
@@ -39,9 +39,9 @@ export namespace Messaging {
 
     export function receiveMessage(sender: string, tick: number, payload: object): boolean {
         const gameManager: GameManager =
-            container.get<GameManager>(GameManagerMeta.TYPE);
+            container.get<GameManager>(TYPE_GAME_MANAGER);
         const memoryManager: MemoryManager =
-            container.get<MemoryManager>(MemoryManagerMeta.TYPE);
+            container.get<MemoryManager>(TYPE_MEMORY_MANAGER);
         const AB: number = gameManager.getTime() & 1;
 
         if (memoryManager.isDebug()) {

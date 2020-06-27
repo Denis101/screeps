@@ -2,16 +2,28 @@ import { injectable, inject } from "inversify";
 import { Messaging } from "messaging";
 
 import ScreepsMemory from "screeps/ScreepsMemory";
-import MemoryManager from "./MemoryManager";
-import GameManager, * as GameManagerMeta from "service/game/GameManager";
 import KeyValuePair from "model/KeyValuePair";
 
+import { GameManager, TYPE_GAME_MANAGER } from "service/GameManager";
+
+export const TYPE_MEMORY_MANAGER: symbol = Symbol('MemoryManager');
+
+export interface MemoryManager {
+    isDebug(): boolean;
+    getMessageChannel(channel: number): Messaging.Message[];
+    setMessageChannel(channel: number, messages: Messaging.Message[]): void;
+    getAllMessages(): Messaging.Message[][];
+    getCreep(id: string): CreepMemory;
+    getCreeps(): KeyValuePair<string, CreepMemory>[];
+    prune(): void;
+};
+
 @injectable()
-export default class MainMemoryManager implements MemoryManager {
+export class _MemoryManager implements MemoryManager {
     private gameManager: GameManager;
 
     constructor(
-        @inject(GameManagerMeta.TYPE) gameManager: GameManager
+        @inject(TYPE_GAME_MANAGER) gameManager: GameManager
     ) {
         this.gameManager = gameManager;
 
@@ -26,6 +38,10 @@ export default class MainMemoryManager implements MemoryManager {
 
     public getMessageChannel(channel: number): Messaging.Message[] {
         return this.getMemory().messages[channel];
+    }
+
+    public setMessageChannel(channel: number, messages: Messaging.Message[]): void {
+        this.getMemory().messages[channel] = messages;
     }
 
     public getAllMessages(): Messaging.Message[][] {

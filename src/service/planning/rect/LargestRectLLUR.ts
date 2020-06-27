@@ -4,15 +4,20 @@ import MatrixCache from 'collection/MatrixCache';
 import Rect from 'model/Rect';
 import NumberPair from 'model/NumberPair';
 
-import LargestRectHeuristic from './interface/LargestRectHeuristic';
 import LargestRectInput from './model/LargestRectInput';
 import LargestRectOutput from './model/LargestRectOutput';
+import { LargestRectHeuristic } from './LargestRectHeuristic';
+import { injectable } from 'inversify';
+import RoomVisualUtils from 'utils/RoomVisualUtils';
 
-
+/**
+ * Lower Left Upper Right
+ */
+@injectable()
 export default class LargestRectLLUR implements LargestRectHeuristic {
     execute(input: LargestRectInput): LargestRectOutput {
         const stack: Stack<NumberPair> = new Stack();
-        const cache: MatrixCache<number> = new MatrixCache(input.search.w, 0, 0);
+        const cache: MatrixCache<number> = new MatrixCache(input.search.w, 0, TERRAIN_MASK_WALL);
 
         let bestLowerLeft: NumberPair = new NumberPair(0, 0);
         let bestUpperRight: NumberPair = new NumberPair(-1, -1);
@@ -61,12 +66,11 @@ export default class LargestRectLLUR implements LargestRectHeuristic {
             }
         }
 
-        return new LargestRectOutput(
-            new Rect(
-                bestLowerLeft.x,
-                Math.max(0, bestUpperRight.y),
-                1 + bestUpperRight.x - bestLowerLeft.x,
-                1 + bestLowerLeft.y - bestUpperRight.y
-            ));
+        const rect: Rect = new Rect(
+            bestLowerLeft.x,
+            Math.max(0, bestUpperRight.y),
+            1 + bestUpperRight.x - bestLowerLeft.x,
+            1 + bestLowerLeft.y - bestUpperRight.y);
+        return new LargestRectOutput(rect);
     }
 }

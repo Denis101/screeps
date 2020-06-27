@@ -37,6 +37,10 @@ export default class NumberPair extends MonoPair<number> {
         return new NumberPair(p1.x - p2.x, p1.y - p2.y);
     }
 
+    public toRoomPosition(roomName: string): RoomPosition {
+        return NumberPair.toRoomPosition(this, roomName);
+    }
+
     public static toRoomPosition(pair: NumberPair, roomName: string): RoomPosition {
         return new RoomPosition(pair.x, pair.y, roomName);
     }

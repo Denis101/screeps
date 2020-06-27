@@ -1,11 +1,32 @@
 import { injectable } from "inversify";
-import GameManager from "./GameManager";
 import KeyValuePair from "model/KeyValuePair";
 
+export const TYPE_GAME_MANAGER: symbol = Symbol('GameManager');
+
+export interface GameManager {
+    getTime(): number;
+    getRoom(name: string): Room;
+    getRooms(): KeyValuePair<string, Room>[];
+    getCreep(id: Id<Creep>): Creep;
+    getCreeps(): KeyValuePair<string, Creep>[];
+    getFlag(id: string): Flag;
+    getFlags(): KeyValuePair<string, Flag>[];
+    getObjectById<T>(id: Id<T> | string): T | null;
+};
+
 @injectable()
-export default class MainGameManager implements GameManager {
+export class _GameManager implements GameManager {
     public getTime(): number {
         return this.getGame().time;
+    }
+
+    public getRoom(name: string): Room {
+        return this.getGame().rooms[name];
+    }
+
+    public getRooms(): KeyValuePair<string, Room>[] {
+        return Object.keys(this.getGame().rooms)
+            .map((k: string) => new KeyValuePair(k, this.getGame().rooms[k]));
     }
 
     public getCreep(id: Id<Creep>): Creep {

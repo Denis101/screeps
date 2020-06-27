@@ -1,5 +1,6 @@
 
-export const TYPE: symbol = Symbol('Processor');
-export default interface Processor {
+export const TYPE_PROCESSOR: symbol = Symbol('Processor');
+
+export interface Processor {
     process(): void;
 }

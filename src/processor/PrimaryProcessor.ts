@@ -1,43 +1,51 @@
 import { injectable, inject } from "inversify";
 
-import Processor from "./Processor";
+import Timer from "timing/Timer";
+import TimerOutput from "timing/TimerOutput";
+import NumberPair from "model/NumberPair";
 
-import MemoryManager, * as MemoryManagerMeta from "service/memory/MemoryManager";
-import MessageBus, * as MessageBusMeta from "service/messageBus/MessageBus";
+import RoomVisualUtils from "utils/RoomVisualUtils";
 
-import RectFinder from "planning/rect/RectFinder";
-import FindRectsHeuristic from "planning/rect/interface/FindRectsHeuristic";
-import LargestRectLLUR from "planning/rect/LargestRectLLUR";
-import FindRectsVH from "planning/rect/FindRectsVH";
-import Matrix from "collection/Matrix";
-import RectSearch from "planning/rect/model/RectSearch";
-import RectParameters from "planning/rect/model/RectParameters";
-import LargestRectInput from "planning/rect/model/LargestRectInput";
+import { SpawnLocationFinder, TYPE_SPAWN_LOCATION_FINDER } from "service/planning/spawn/SpawnLocationFinder";
+import { GameManager, TYPE_GAME_MANAGER } from "service/GameManager";
+import { MemoryManager, TYPE_MEMORY_MANAGER } from "service/MemoryManager";
+import { MessageBus, TYPE_MESSAGE_BUS } from "service/MessageBus";
+
+import { Processor } from "./Processor";
+import SpawnLocationInput from "service/planning/spawn/model/SpawnLocationInput";
+import RectParameters from "service/planning/rect/model/RectParameters";
+import SpawnLocationOutput from "service/planning/spawn/model/SpawnLocationOutput";
 
 @injectable()
 export default class PrimaryProcessor implements Processor {
+    private gameManager: GameManager;
     private memoryManager: MemoryManager;
     private messageBus: MessageBus;
+    private spawnLocationFinder: SpawnLocationFinder;
 
     public constructor(
-        @inject(MemoryManagerMeta.TYPE) memoryManager: MemoryManager,
-        @inject(MessageBusMeta.TYPE) messageBus: MessageBus
+        @inject(TYPE_GAME_MANAGER) gameManager: GameManager,
+        @inject(TYPE_MEMORY_MANAGER) memoryManager: MemoryManager,
+        @inject(TYPE_MESSAGE_BUS) messageBus: MessageBus,
+        @inject(TYPE_SPAWN_LOCATION_FINDER) spawnLocationFinder: SpawnLocationFinder
     ) {
+        this.gameManager = gameManager;
         this.memoryManager = memoryManager;
         this.messageBus = messageBus;
+        this.spawnLocationFinder = spawnLocationFinder;
     }
 
     process(): void {
-        // const rectFinder: RectFinder<FindRectsHeuristic, LargestRectLLUR> =
-        //     new RectFinder(new FindRectsVH(), new LargestRectLLUR());
+        const timingResult: TimerOutput = new Timer().timeExecution(() => {
+            for (const kv of this.gameManager.getRooms()) {
+                const output: SpawnLocationOutput = this.spawnLocationFinder.find(
+                    new SpawnLocationInput(kv.value, new RectParameters(133, 1)));
+                RoomVisualUtils.drawPoint(new NumberPair(output.location.x, output.location.y));
+                RoomVisualUtils.drawRect(output.rect);
+            }
 
-        // const matrix: Matrix<number> = Matrix.fromArray([[0]]);
-        // const search: RectSearch = RectSearch.fromCoords(0, 0, 0, 0);
-        // const params: RectParameters = new RectParameters(0, 0);
-
-        // const input: LargestRectInput = new LargestRectInput(matrix, search, params);
-        // rectFinder.getLargestRect(input);
-
-        this.messageBus.processMessages();
+            // todo; main loop
+            this.messageBus.processMessages();
+        });
     }
 }

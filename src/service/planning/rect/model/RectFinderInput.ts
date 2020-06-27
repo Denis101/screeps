@@ -1,9 +1,8 @@
 import Matrix from "collection/Matrix";
 import RectSearch from "./RectSearch";
 import RectParameters from "./RectParameters";
-import { HeuristicInput } from "utils/Heuristic";
 
-export default class FindRectsInput implements HeuristicInput {
+export default class RectFinderInput {
     private _matrix: Matrix<number>;
     private _search: RectSearch;
     private _params: RectParameters;

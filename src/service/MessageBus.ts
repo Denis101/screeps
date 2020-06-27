@@ -3,21 +3,26 @@ import _ from "lodash";
 
 import { Messaging } from "messaging";
 
-import GameManager, * as GameManagerMeta from "service/game/GameManager";
-import MemoryManager, * as MemoryManagerMeta from "service/memory/MemoryManager";
-
-import MessageBus from "./MessageBus";
+import { GameManager, TYPE_GAME_MANAGER } from "service/GameManager";
+import { MemoryManager, TYPE_MEMORY_MANAGER } from "service/MemoryManager";
 import ScreepsRoomObject from "screeps/ScreepsRoomObject";
 
 
+export const TYPE_MESSAGE_BUS: symbol = Symbol('MessageBus');
+
+export interface MessageBus {
+    processMessages(): void;
+    processMessage(message: Messaging.Message): boolean;
+};
+
 @injectable()
-export default class MainMessageBus implements MessageBus {
+export class _MessageBus implements MessageBus {
     private gameManager: GameManager;
     private memoryManager: MemoryManager;
 
     public constructor(
-        @inject(GameManagerMeta.TYPE) gameManager: GameManager,
-        @inject(MemoryManagerMeta.TYPE) memoryManager: MemoryManager
+        @inject(TYPE_GAME_MANAGER) gameManager: GameManager,
+        @inject(TYPE_MEMORY_MANAGER) memoryManager: MemoryManager
     ) {
         this.gameManager = gameManager;
         this.memoryManager = memoryManager;
