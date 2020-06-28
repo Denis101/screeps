@@ -6,6 +6,7 @@ export const TYPE_PROCESSOR: string = 'Processor';
 
 export interface ProcessorInput { }
 export interface ProcessorOutput {
+    processorType: string;
     payload: object | undefined;
     children: ProcessorOutput[];
     timing: TimerOutput | undefined;
@@ -26,6 +27,7 @@ export function wrapProcess(
     });
 
     return {
+        processorType: (output && (<any>output).processorType) || undefined,
         payload: (output && (<any>output).payload) || undefined,
         children: (output && (<any>output).children) || [],
         timing: timing,

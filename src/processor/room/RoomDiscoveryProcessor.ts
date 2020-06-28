@@ -29,7 +29,7 @@ export class RoomDiscoveryProcessor implements Processor {
     }
 
     process(input: RoomProcessorInput): ProcessorOutput {
-        return wrapProcess((input: ProcessorInput): void => {
+        return wrapProcess((input: ProcessorInput): ProcessorOutput => {
             const room: Room = (<RoomProcessorInput>input).room;
             const output: SpawnLocationOutput = this.spawnLocationFinder.find(
                 new SpawnLocationInput(
@@ -40,7 +40,12 @@ export class RoomDiscoveryProcessor implements Processor {
 
             const controller: StructureController | undefined = room.controller;
             if (!controller) {
-                return;
+                return {
+                    processorType: this.type,
+                    children: [],
+                    payload: undefined,
+                    timing: undefined
+                };
             }
 
             RoomVisualUtils.drawPath(
@@ -48,6 +53,13 @@ export class RoomDiscoveryProcessor implements Processor {
             for (const src of room.find(FIND_SOURCES)) {
                 RoomVisualUtils.drawPath(room.findPath(output.location, src.pos), 'yellow');
             }
+
+            return {
+                processorType: this.type,
+                children: [],
+                payload: undefined,
+                timing: undefined
+            };
         }, input);
     }
 }

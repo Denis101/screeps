@@ -60,6 +60,7 @@ export class GamePrimaryProcessor implements Processor {
             this.messageBus.processMessages();
 
             return {
+                processorType: this.type,
                 children,
                 payload: undefined,
                 timing: undefined,
