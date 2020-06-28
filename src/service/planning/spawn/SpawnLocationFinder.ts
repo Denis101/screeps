@@ -5,7 +5,7 @@ import SpawnLocationOutput from "./model/SpawnLocationOutput";
 import { SpawnLocationHeuristic, TYPE_SPAWN_LOCATION_HEURISTIC } from "./SpawnLocationHeuristic";
 import { service } from "inversify.config";
 
-export const TYPE_SPAWN_LOCATION_FINDER: symbol = Symbol('SpawnLocationFinder');
+export const TYPE_SPAWN_LOCATION_FINDER: string = 'SpawnLocationFinder';
 
 export interface SpawnLocationFinder {
     find(input: SpawnLocationInput): SpawnLocationOutput;
@@ -13,10 +13,10 @@ export interface SpawnLocationFinder {
 
 @service<SpawnLocationFinder>(TYPE_SPAWN_LOCATION_FINDER)
 export class _SpawnLocationFinder {
-    private _factory: (name: symbol) => SpawnLocationHeuristic;
+    private _factory: (name: string) => SpawnLocationHeuristic;
 
     constructor(
-        @inject(TYPE_SPAWN_LOCATION_HEURISTIC) factory: (name: symbol) => SpawnLocationHeuristic
+        @inject(TYPE_SPAWN_LOCATION_HEURISTIC) factory: (name: string) => SpawnLocationHeuristic
     ) {
         this._factory = factory;
     }

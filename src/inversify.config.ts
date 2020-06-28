@@ -7,7 +7,7 @@ const container: Container = new Container();
  * One-to-one mapping of an interface
  * @param type Interface type
  */
-export function service<I>(type: symbol) {
+export function service<I>(type: string) {
     return (target: any) => {
         container.bind<I>(type).to(target);
         injectable()(target);
@@ -19,7 +19,7 @@ export function service<I>(type: symbol) {
  * @param type Interface type
  * @param named Interface sub-type
  */
-export function component<I>(type: symbol, named: symbol) {
+export function component<I>(type: string, named: string) {
     return (target: any) => {
         container.bind<I>(type).to(target).whenTargetNamed(named);
         injectable()(target);
@@ -31,10 +31,10 @@ export function component<I>(type: symbol, named: symbol) {
  * this allows one-to-many mappings of components
  * @param type Interface type
  */
-export function bindFactory<I>(type: symbol) {
-    container.bind<interfaces.Factory<I>>(type)
+export function bindFactory<I>(type: string) {
+    container.bind<interfaces.Factory<I>>(factoryType(type))
         .toFactory<I>((context: interfaces.Context): interfaces.Factory<I> => {
-            return (named: string) => context.container.getNamed<I>(type, named);
+            return (named: string) => context.container.getNamed<I>(type, named)
         });
 }
 
@@ -42,8 +42,8 @@ export function bindFactory<I>(type: symbol) {
  * Gets the factory symbol of a given interface type
  * @param type Interface type
  */
-export function factoryType(type: symbol) {
-    return Symbol(`Factory<${String(type)}>`);
+export function factoryType(type: string): string {
+    return `Factory${type}`;
 }
 
 export default container;

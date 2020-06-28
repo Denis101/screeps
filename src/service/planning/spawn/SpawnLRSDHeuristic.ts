@@ -18,7 +18,7 @@ import SourceMeta from "model/SourceMeta";
 import FindRectsInput from "../rect/model/FindRectsInput";
 import { TYPE_FIND_RECTS_VH } from "../rect/FindRectsVH";
 
-export const TYPE_SPAWN_LRSD: symbol = Symbol('SpawnLRSDFinder');
+export const TYPE_SPAWN_LRSD: string = 'SpawnLRSDFinder';
 
 export interface SpawnLRSDHeuristic extends SpawnLocationHeuristic { }
 

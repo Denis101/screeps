@@ -1,5 +1,5 @@
 export interface HeuristicInput {
-    heuristic: symbol;
+    heuristic: string;
 }
 export interface HeuristicOutput { }
 

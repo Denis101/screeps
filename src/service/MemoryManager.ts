@@ -6,10 +6,10 @@ import ScreepsMemory from "screeps/ScreepsMemory";
 import KeyValuePair from "model/KeyValuePair";
 
 import { GameManager, TYPE_GAME_MANAGER } from "service/GameManager";
-import TimerOutput from "timing/TimerOutput";
 import ScreepsRoomMemory from "screeps/ScreepsRoomMemory";
+import { ProcessorOutput } from "processor/Processor";
 
-export const TYPE_MEMORY_MANAGER: symbol = Symbol('MemoryManager');
+export const TYPE_MEMORY_MANAGER: string = 'MemoryManager';
 
 export interface MemoryManager {
     isDebug(): boolean;
@@ -20,8 +20,8 @@ export interface MemoryManager {
     hasRoom(name: string): boolean;
     getCreep(id: string): CreepMemory;
     getCreeps(): KeyValuePair<string, CreepMemory>[];
-    getPreviousExecutionTime(): TimerOutput;
-    setPreviousExecutionTime(timer: TimerOutput): void;
+    getProcessorOutput(): ProcessorOutput;
+    setProcessorOutput(output: ProcessorOutput): void;
     prune(): void;
 };
 
@@ -61,7 +61,7 @@ export class _MemoryManager implements MemoryManager {
 
     public hasRoom(name: string): boolean {
         return this.getRoom(name) !== null
-            || this.getRoom(name) !== undefined;
+            && this.getRoom(name) !== undefined;
     }
 
     public getCreep(id: string) {
@@ -73,12 +73,12 @@ export class _MemoryManager implements MemoryManager {
             .map((k: string) => new KeyValuePair(k, this.getMemory().creeps[k]));
     }
 
-    public getPreviousExecutionTime(): TimerOutput {
-        return this.getMemory().previousExecutionTime;
+    public getProcessorOutput(): ProcessorOutput {
+        return this.getMemory().processorOutput;
     }
 
-    public setPreviousExecutionTime(timer: TimerOutput): void {
-        this.getMemory().previousExecutionTime = timer;
+    public setProcessorOutput(output: ProcessorOutput): void {
+        this.getMemory().processorOutput = output;
     }
 
     public prune() {

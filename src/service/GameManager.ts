@@ -1,7 +1,7 @@
 import { service } from "inversify.config";
 import KeyValuePair from "model/KeyValuePair";
 
-export const TYPE_GAME_MANAGER: symbol = Symbol('GameManager');
+export const TYPE_GAME_MANAGER: string = 'GameManager';
 
 export interface GameManager {
     getTime(): number;

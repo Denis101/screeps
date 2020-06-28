@@ -3,7 +3,7 @@ import LargestRectOutput from './model/LargestRectOutput';
 import Heuristic from 'utils/Heuristic';
 import { bindFactory } from 'inversify.config';
 
-export const TYPE_LARGEST_RECT_HEURISTIC: symbol = Symbol('LargestRectHeuristic');
+export const TYPE_LARGEST_RECT_HEURISTIC: string = 'LargestRectHeuristic';
 
 export interface LargestRectHeuristic extends Heuristic<LargestRectInput, LargestRectOutput> { }
 

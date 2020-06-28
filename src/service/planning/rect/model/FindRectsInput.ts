@@ -4,13 +4,13 @@ import RectParameters from "./RectParameters";
 import { HeuristicInput } from "utils/Heuristic";
 
 export default class FindRectsInput implements HeuristicInput {
-    private _heuristic: symbol;
+    private _heuristic: string;
     private _matrix: Matrix<number>;
     private _search: RectSearch;
     private _params: RectParameters;
 
     constructor(
-        heuristic: symbol,
+        heuristic: string,
         matrix: Matrix<number>,
         search: RectSearch,
         params: RectParameters
@@ -21,7 +21,7 @@ export default class FindRectsInput implements HeuristicInput {
         this._params = params;
     }
 
-    public get heuristic(): symbol {
+    public get heuristic(): string {
         return this._heuristic;
     }
 

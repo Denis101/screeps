@@ -20,4 +20,8 @@ export default class TimerOutput {
     public get delta(): number {
         return this._delta;
     }
+
+    public static invalid(): TimerOutput {
+        return new TimerOutput(-1, -1, -1);
+    }
 }

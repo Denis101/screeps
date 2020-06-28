@@ -17,7 +17,7 @@ import { component } from "inversify.config";
 import { RectFinder, TYPE_RECT_FINDER } from "./RectFinder";
 import { TYPE_LARGEST_RECT_LLUR } from "./LargestRectLLUR";
 
-export const TYPE_FIND_RECTS_VH: symbol = Symbol('FindRectsVH');
+export const TYPE_FIND_RECTS_VH: string = 'FindRectsVH';
 
 /**
  * Vertical Horizontal

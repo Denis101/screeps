@@ -1,8 +1,8 @@
 import { Messaging } from "messaging";
-import TimerOutput from "timing/TimerOutput";
+import { ProcessorOutput } from "processor/Processor";
 
 export default interface ScreepsMemory extends Memory {
     debug: boolean;
     messages: Messaging.Message[][];
-    previousExecutionTime: TimerOutput;
+    processorOutput: ProcessorOutput;
 }

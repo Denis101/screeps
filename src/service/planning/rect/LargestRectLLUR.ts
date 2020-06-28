@@ -11,7 +11,7 @@ import LargestRectOutput from './model/LargestRectOutput';
 import { LargestRectHeuristic, TYPE_LARGEST_RECT_HEURISTIC } from './LargestRectHeuristic';
 import { component } from 'inversify.config';
 
-export const TYPE_LARGEST_RECT_LLUR: symbol = Symbol('LargestRectLLUR');
+export const TYPE_LARGEST_RECT_LLUR: string = 'LargestRectLLUR';
 
 /**
  * Lower Left Upper Right

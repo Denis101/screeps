@@ -13,7 +13,7 @@ import RectParameters from "service/planning/rect/model/RectParameters";
 import NumberPair from "model/NumberPair";
 import RoomProcessorInput from "./RoomProcessorInput";
 
-export const TYPE_ROOM_DISCOVERY_PROCESSOR: symbol = Symbol('RoomDiscoveryProcessor');
+export const TYPE_ROOM_DISCOVERY_PROCESSOR: string = 'RoomDiscoveryProcessor';
 
 @component<Processor>(TYPE_PROCESSOR, TYPE_ROOM_DISCOVERY_PROCESSOR)
 export class RoomDiscoveryProcessor implements Processor {

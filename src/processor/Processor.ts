@@ -2,11 +2,13 @@ import { bindFactory } from "inversify.config";
 import TimerOutput from "timing/TimerOutput";
 import Timer from "timing/Timer";
 
-export const TYPE_PROCESSOR: symbol = Symbol('Processor');
+export const TYPE_PROCESSOR: string = 'Processor';
 
 export interface ProcessorInput { }
 export interface ProcessorOutput {
-    timing: TimerOutput;
+    payload: object | undefined;
+    children: ProcessorOutput[];
+    timing: TimerOutput | undefined;
 }
 
 export interface Processor {
@@ -23,7 +25,8 @@ export function wrapProcess(
     });
 
     return {
-        ...output || {},
+        payload: (<any>output).payload || undefined,
+        children: (<any>output).children || [],
         timing: timing,
     };
 }

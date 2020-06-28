@@ -1,7 +1,7 @@
 import { service } from "inversify.config";
 import Timing from "model/Timing";
 
-export const TYPE_TICK_CALCULATOR: symbol = Symbol('TickCalculator');
+export const TYPE_TICK_CALCULATOR: string = 'TickCalculator';
 
 export interface TickCalculator {
     getInitialTiming(sampleRate: number): Timing;

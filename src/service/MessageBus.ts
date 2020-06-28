@@ -8,7 +8,7 @@ import { GameManager, TYPE_GAME_MANAGER } from "service/GameManager";
 import { MemoryManager, TYPE_MEMORY_MANAGER } from "service/MemoryManager";
 import ScreepsRoomObject from "screeps/ScreepsRoomObject";
 
-export const TYPE_MESSAGE_BUS: symbol = Symbol('MessageBus');
+export const TYPE_MESSAGE_BUS: string = 'MessageBus';
 
 export interface MessageBus {
     processMessages(): void;
