@@ -11,6 +11,10 @@ export default class SourceMeta {
         this._source = source;
     }
 
+    public get id(): Id<Source> {
+        return this._source.id;
+    }
+
     public get pos(): RoomPosition {
         return this._source.pos;
     }

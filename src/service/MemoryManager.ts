@@ -18,6 +18,7 @@ export interface MemoryManager {
     setMessageChannel(channel: number, messages: Messaging.Message[]): void;
     getAllMessages(): Messaging.Message[][];
     getRoom(name: string): ScreepsRoomMemory;
+    setRoom(name: string, memory: ScreepsRoomMemory): void;
     hasRoom(name: string): boolean;
     getCreep(id: string): CreepMemory;
     getCreeps(): KeyValuePair<string, CreepMemory>[];
@@ -61,6 +62,10 @@ export class _MemoryManager implements MemoryManager {
 
     public getRoom(name: string): ScreepsRoomMemory {
         return <ScreepsRoomMemory>this.getMemory().rooms[name];
+    }
+
+    public setRoom(name: string, memory: ScreepsRoomMemory): void {
+        this.getMemory().rooms[name] = memory;
     }
 
     public hasRoom(name: string): boolean {

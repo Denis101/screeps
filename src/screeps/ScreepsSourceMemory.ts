@@ -1,18 +1,16 @@
+export class ActiveCreeps {
+    public capacity: number = 0;
+    public active: Id<Creep>[] = [];
+}
+
 export default interface ScreepsSourceMemory {
     id: Id<Source>;
-    containerId: Id<StructureContainer>;
-    containerSiteId: Id<ConstructionSite>;
-    flagId: string;
+    containerId: Id<StructureContainer> | null;
+    containerSiteId: Id<ConstructionSite> | null;
+    flagId: string | null;
 
-    // capacities
-    pawnCapacity: number;
-    courierCapacity: number;
-    builderCapacity: number;
-    minerCapacity: number;
-
-    // creeps
-    pawns: Id<Creep>[];
-    couriers: Id<Creep>[];
-    builders: Id<Creep>[];
-    miners: Id<Creep>[];
+    pawns: ActiveCreeps;
+    couriers: ActiveCreeps;
+    builders: ActiveCreeps;
+    miners: ActiveCreeps;
 }

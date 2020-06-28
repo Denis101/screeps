@@ -9,8 +9,13 @@ export class RoomOwnedProcessor implements Processor {
     public readonly type: string = TYPE;
 
     process(input: ProcessorInput): ProcessorOutput {
-        return wrapProcess((): void => {
-            throw new Error("Method not implemented.");
+        return wrapProcess((): ProcessorOutput => {
+            return {
+                processorType: this.type,
+                children: [],
+                payload: undefined,
+                timing: undefined
+            };
         }, input);
     }
 
