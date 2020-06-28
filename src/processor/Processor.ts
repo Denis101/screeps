@@ -26,8 +26,8 @@ export function wrapProcess(
     });
 
     return {
-        payload: (<any>output).payload || undefined,
-        children: (<any>output).children || [],
+        payload: (output && (<any>output).payload) || undefined,
+        children: (output && (<any>output).children) || [],
         timing: timing,
     };
 }
