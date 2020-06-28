@@ -1,4 +1,4 @@
-import { injectable } from "inversify";
+import { service } from "inversify.config";
 import KeyValuePair from "model/KeyValuePair";
 
 export const TYPE_GAME_MANAGER: symbol = Symbol('GameManager');
@@ -14,7 +14,7 @@ export interface GameManager {
     getObjectById<T>(id: Id<T> | string): T | null;
 };
 
-@injectable()
+@service<GameManager>(TYPE_GAME_MANAGER)
 export class _GameManager implements GameManager {
     public getTime(): number {
         return this.getGame().time;

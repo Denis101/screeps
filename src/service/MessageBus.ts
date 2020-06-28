@@ -1,4 +1,5 @@
-import { injectable, inject } from "inversify";
+import { inject } from "inversify";
+import { service } from "inversify.config";
 import _ from "lodash";
 
 import { Messaging } from "messaging";
@@ -7,7 +8,6 @@ import { GameManager, TYPE_GAME_MANAGER } from "service/GameManager";
 import { MemoryManager, TYPE_MEMORY_MANAGER } from "service/MemoryManager";
 import ScreepsRoomObject from "screeps/ScreepsRoomObject";
 
-
 export const TYPE_MESSAGE_BUS: symbol = Symbol('MessageBus');
 
 export interface MessageBus {
@@ -15,7 +15,7 @@ export interface MessageBus {
     processMessage(message: Messaging.Message): boolean;
 };
 
-@injectable()
+@service<MessageBus>(TYPE_MESSAGE_BUS)
 export class _MessageBus implements MessageBus {
     private gameManager: GameManager;
     private memoryManager: MemoryManager;

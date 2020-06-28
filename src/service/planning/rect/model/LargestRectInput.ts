@@ -4,14 +4,25 @@ import RectParameters from "./RectParameters";
 import { HeuristicInput } from "utils/Heuristic";
 
 export default class LargestRectInput implements HeuristicInput {
+    private _heuristic: symbol;
     private _matrix: Matrix<number>;
     private _search: RectSearch;
     private _params: RectParameters;
 
-    constructor(matrix: Matrix<number>, search: RectSearch, params: RectParameters) {
+    constructor(
+        heuristic: symbol,
+        matrix: Matrix<number>,
+        search: RectSearch,
+        params: RectParameters
+    ) {
+        this._heuristic = heuristic;
         this._matrix = matrix;
         this._search = search;
         this._params = params;
+    }
+
+    public get heuristic(): symbol {
+        return this._heuristic;
     }
 
     public get matrix(): Matrix<number> {

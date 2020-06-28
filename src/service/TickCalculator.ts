@@ -1,5 +1,5 @@
+import { service } from "inversify.config";
 import Timing from "model/Timing";
-import { injectable } from "inversify";
 
 export const TYPE_TICK_CALCULATOR: symbol = Symbol('TickCalculator');
 
@@ -8,7 +8,7 @@ export interface TickCalculator {
     calculate(sampleRate: number, timing: Timing): Timing;
 }
 
-@injectable()
+@service<TickCalculator>(TYPE_TICK_CALCULATOR)
 export class _TickCalculator implements TickCalculator {
     public getInitialTiming(sampleRate: number): Timing {
         const lastTickMs: number = Math.floor(sampleRate + (sampleRate / 10));

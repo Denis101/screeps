@@ -11,13 +11,16 @@ import SpawnLocationInput from "./model/SpawnLocationInput";
 import SpawnLocationOutput from "./model/SpawnLocationOutput";
 import { SpawnLocationHeuristic } from "./SpawnLocationHeuristic";
 
-import RectFinderInput from "../rect/model/RectFinderInput";
 import RectSearch from "../rect/model/RectSearch";
 import { RectFinder, TYPE_RECT_FINDER } from "../rect/RectFinder";
+import RoomUtils from "utils/RoomUtils";
+import SourceMeta from "model/SourceMeta";
+import FindRectsInput from "../rect/model/FindRectsInput";
+import { TYPE_FIND_RECTS_VH } from "../rect/FindRectsVH";
 
-export const TYPE: symbol = Symbol('SpawnLRSDFinder');
+export const TYPE_SPAWN_LRSD: symbol = Symbol('SpawnLRSDFinder');
 
-export default interface SpawnLRSDHeuristic extends SpawnLocationHeuristic { }
+export interface SpawnLRSDHeuristic extends SpawnLocationHeuristic { }
 
 @injectable()
 export class _SpawnLRSDHeuristic implements SpawnLRSDHeuristic {
@@ -43,11 +46,11 @@ export class _SpawnLRSDHeuristic implements SpawnLRSDHeuristic {
 
         const rectSearch: RectSearch =
             RectSearch.fromCoords(0, 0, matrix.size(), matrix.size());
-        const { rects } =
-            this.rectFinder.find(
-                new RectFinderInput(matrix, rectSearch, input.minBaseSize));
+        const findRectsInput: FindRectsInput =
+            new FindRectsInput(TYPE_FIND_RECTS_VH, matrix, rectSearch, input.minBaseSize);
+        const { rects } = this.rectFinder.rects(findRectsInput);
 
-        const sources: Source[] = input.room.find(FIND_SOURCES);
+        const sources: SourceMeta[] = RoomUtils.getSourceMeta(input.room);
         const pathTotals: number[] = [];
         for (const rect of rects) {
             let pathTotal: number = 0;
@@ -64,7 +67,7 @@ export class _SpawnLRSDHeuristic implements SpawnLRSDHeuristic {
 
             for (const src of sources) {
                 const srcPath: PathStep[] = input.room.findPath(centre, src.pos);
-                pathTotal += srcPath.length;
+                pathTotal += src.weightInverse * srcPath.length;
             }
 
             pathTotals.push(pathTotal);

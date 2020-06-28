@@ -8,24 +8,28 @@ import Matrix from "collection/Matrix";
 import FindRectsInput from "./model/FindRectsInput";
 import FindRectsOutput from "./model/FindRectsOutput";
 
-import { FindRectsHeuristic } from "./FindRectsHeuristic";
-import { TYPE_LARGEST_RECT_HEURISTIC, LargestRectHeuristic } from "./LargestRectHeuristic";
+import { FindRectsHeuristic, TYPE_FIND_RECTS_HEURISTIC } from "./FindRectsHeuristic";
 
 import RectSearch from "./model/RectSearch";
 import RectParameters from "./model/RectParameters";
 import LargestRectInput from "./model/LargestRectInput";
+import { component } from "inversify.config";
+import { RectFinder, TYPE_RECT_FINDER } from "./RectFinder";
+import { TYPE_LARGEST_RECT_LLUR } from "./LargestRectLLUR";
+
+export const TYPE_FIND_RECTS_VH: symbol = Symbol('FindRectsVH');
 
 /**
  * Vertical Horizontal
  */
-@injectable()
+@component<FindRectsHeuristic>(TYPE_FIND_RECTS_HEURISTIC, TYPE_FIND_RECTS_VH)
 export default class FindRectsVH implements FindRectsHeuristic {
-    private largestRect: LargestRectHeuristic;
+    private rectFinder: RectFinder;
 
     constructor(
-        @inject(TYPE_LARGEST_RECT_HEURISTIC) largestRect: LargestRectHeuristic
+        @inject(TYPE_RECT_FINDER) rectFinder: RectFinder
     ) {
-        this.largestRect = largestRect;
+        this.rectFinder = rectFinder;
     }
 
     execute(input: FindRectsInput): FindRectsOutput {
@@ -41,13 +45,18 @@ export default class FindRectsVH implements FindRectsHeuristic {
         params: RectParameters,
         prevBiggest: Rect,
     ): FindRectsOutput {
-        if (params.minArea > search.area || params.minPerimeter > search.perimeter) {
+        if (params.minArea > search.area
+            || params.minPerimeter > search.perimeter) {
             return new FindRectsOutput(prevBiggest.area, [prevBiggest]);
         }
 
+        let input: LargestRectInput =
+            new LargestRectInput(TYPE_LARGEST_RECT_LLUR, matrix, search, params);
+
         let biggest: Rect =
-            this.largestRect.execute(new LargestRectInput(matrix, search, params)).rect;
-        if (params.minArea > biggest.area || params.minPerimeter > biggest.perimeter) {
+            this.rectFinder.largest(input).rect;
+        if (params.minArea > biggest.area
+            || params.minPerimeter > biggest.perimeter) {
             return new FindRectsOutput(prevBiggest.area, [prevBiggest]);
         }
 
@@ -56,8 +65,10 @@ export default class FindRectsVH implements FindRectsHeuristic {
             biggest.y + search.y,
             biggest.w, biggest.h);
 
-        const horz: FindRectsOutput = this.getHorizontal(matrix, search, params, subSearch);
-        const vert: FindRectsOutput = this.getVertical(matrix, search, params, subSearch);
+        const horz: FindRectsOutput =
+            this.getHorizontal(matrix, search, params, subSearch);
+        const vert: FindRectsOutput =
+            this.getVertical(matrix, search, params, subSearch);
 
         const pred: BiPredicate<Rect, Rect> = (a: Rect, b: Rect) => {
             return a.x === b.x && a.y === b.y && a.w === b.w && a.h === b.h;

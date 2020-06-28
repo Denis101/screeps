@@ -44,4 +44,12 @@ export default class NumberPair extends MonoPair<number> {
     public static toRoomPosition(pair: NumberPair, roomName: string): RoomPosition {
         return new RoomPosition(pair.x, pair.y, roomName);
     }
+
+    public static get zero(): NumberPair {
+        return new NumberPair(0, 0);
+    }
+
+    public static get one(): NumberPair {
+        return new NumberPair(1, 1);
+    }
 }

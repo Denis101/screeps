@@ -31,7 +31,7 @@ export default class Rect {
     }
 
     public get bottomRight(): NumberPair {
-        return NumberPair.add(this._pos, this._size);
+        return NumberPair.add(this._pos, NumberPair.subtract(this._size, NumberPair.one));
     }
 
     public get left(): number {

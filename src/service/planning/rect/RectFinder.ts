@@ -1,4 +1,5 @@
-import { injectable, inject } from "inversify";
+import { inject } from "inversify";
+import { service } from "inversify.config";
 
 import LargestRectInput from "./model/LargestRectInput";
 import LargestRectOutput from "./model/LargestRectOutput";
@@ -8,39 +9,31 @@ import FindRectsInput from "./model/FindRectsInput";
 import FindRectsOutput from "./model/FindRectsOutput";
 import { FindRectsHeuristic, TYPE_FIND_RECTS_HEURISTIC } from "./FindRectsHeuristic";
 
-import RectFinderInput from "./model/RectFinderInput";
-import RectFinderOutput from "./model/RectFinderOutput";
-
 export const TYPE_RECT_FINDER: symbol = Symbol('RectFinder');
 
 export interface RectFinder {
-    find(input: RectFinderInput): RectFinderOutput;
+    rects(input: FindRectsInput): FindRectsOutput;
+    largest(input: LargestRectInput): LargestRectOutput;
 }
 
-@injectable()
-export class _RectFinder<A extends FindRectsHeuristic, B extends LargestRectHeuristic> implements RectFinder {
-    private rectsInAreaHeuristic: A;
-    private largestRectHeuristic: B;
+@service<RectFinder>(TYPE_RECT_FINDER)
+export class _RectFinder implements RectFinder {
+    private _findRectsFactory: (name: symbol) => FindRectsHeuristic;
+    private _largestRectFactory: (name: symbol) => LargestRectHeuristic;
 
     constructor(
-        @inject(TYPE_FIND_RECTS_HEURISTIC) rectsInAreaHeuristic: A,
-        @inject(TYPE_LARGEST_RECT_HEURISTIC) largestRectHeuristic: B
+        @inject(TYPE_FIND_RECTS_HEURISTIC) findRectsFactory: (name: symbol) => FindRectsHeuristic,
+        @inject(TYPE_LARGEST_RECT_HEURISTIC) largestRectFactory: (name: symbol) => LargestRectHeuristic
     ) {
-        this.rectsInAreaHeuristic = rectsInAreaHeuristic;
-        this.largestRectHeuristic = largestRectHeuristic;
+        this._findRectsFactory = findRectsFactory;
+        this._largestRectFactory = largestRectFactory;
     }
 
-    public find(input: RectFinderInput): RectFinderOutput {
-        const output: FindRectsOutput =
-            this.findRectsInArea(FindRectsInput.fromRectFinderInput(input));
-        return new RectFinderOutput(output.rects);
+    public rects(input: FindRectsInput): FindRectsOutput {
+        return this._findRectsFactory(input.heuristic).execute(input);
     }
 
-    private findRectsInArea(input: FindRectsInput): FindRectsOutput {
-        return this.rectsInAreaHeuristic.execute(input);
-    }
-
-    private getLargestRect(input: LargestRectInput): LargestRectOutput {
-        return this.largestRectHeuristic.execute(input);
+    public largest(input: LargestRectInput): LargestRectOutput {
+        return this._largestRectFactory(input.heuristic).execute(input);
     }
 }

@@ -1,4 +1,6 @@
-export interface HeuristicInput { }
+export interface HeuristicInput {
+    heuristic: symbol;
+}
 export interface HeuristicOutput { }
 
 export default interface Heuristic<I extends HeuristicInput, O extends HeuristicOutput> {

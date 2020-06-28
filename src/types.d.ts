@@ -6,3 +6,8 @@ type TriFunc<A, B, C, R> = (a: A, b: B, c: C) => R;
 type Predicate<T> = (value: T) => boolean;
 type BiPredicate<A, B> = (a: A, b: B) => boolean;
 type TriPredicate<A, B, C> = (a: A, b: B, c: C) => boolean;
+
+type ProcessorType = "game" | "room";
+
+type GameProcessorType = "primary";
+type RoomProcessorType = "owned" | "discovery";

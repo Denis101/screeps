@@ -8,12 +8,15 @@ import NumberPair from 'model/NumberPair';
 
 import LargestRectInput from './model/LargestRectInput';
 import LargestRectOutput from './model/LargestRectOutput';
-import { LargestRectHeuristic } from './LargestRectHeuristic';
+import { LargestRectHeuristic, TYPE_LARGEST_RECT_HEURISTIC } from './LargestRectHeuristic';
+import { component } from 'inversify.config';
+
+export const TYPE_LARGEST_RECT_LLUR: symbol = Symbol('LargestRectLLUR');
 
 /**
  * Lower Left Upper Right
  */
-@injectable()
+@component<LargestRectHeuristic>(TYPE_LARGEST_RECT_HEURISTIC, TYPE_LARGEST_RECT_LLUR)
 export default class LargestRectLLUR implements LargestRectHeuristic {
     execute(input: LargestRectInput): LargestRectOutput {
         const stack: Stack<NumberPair> = new Stack();

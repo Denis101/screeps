@@ -54,7 +54,8 @@ export default class RoomVisualUtils {
     ): void {
         for (let i: number = 1; i < path.length; i++) {
             roomVisual.line(path[i - 1].x, path[i - 1].y, path[i].x, path[i].y, {
-                color
+                color,
+                lineStyle: 'dashed',
             });
         }
     }
