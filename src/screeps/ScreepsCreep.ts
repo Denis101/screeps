@@ -1,6 +1,11 @@
 import { Messaging } from "messaging";
 
+const TYPE = 'ScreepsCreep';
+
 export default class ScreepsCreep extends Creep implements Messaging.MessageSenderReceiver {
+    public static readonly TYPE: string = TYPE;
+    public readonly type: string = TYPE;
+
     public processTick(): void {
 
     }

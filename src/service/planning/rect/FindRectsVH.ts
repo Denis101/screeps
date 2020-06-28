@@ -1,33 +1,34 @@
-import { inject, injectable } from "inversify";
+import { inject } from "inversify";
+import { component } from "inversify.config";
 
 import ArrayUtils from "utils/ArrayUtils";
-
 import Rect from "model/Rect";
 import Matrix from "collection/Matrix";
 
 import FindRectsInput from "./model/FindRectsInput";
 import FindRectsOutput from "./model/FindRectsOutput";
-
-import { FindRectsHeuristic, TYPE_FIND_RECTS_HEURISTIC } from "./FindRectsHeuristic";
-
 import RectSearch from "./model/RectSearch";
 import RectParameters from "./model/RectParameters";
 import LargestRectInput from "./model/LargestRectInput";
-import { component } from "inversify.config";
-import { RectFinder, TYPE_RECT_FINDER } from "./RectFinder";
-import { TYPE_LARGEST_RECT_LLUR } from "./LargestRectLLUR";
 
-export const TYPE_FIND_RECTS_VH: string = 'FindRectsVH';
+import { RectFinder, _RectFinder } from "./RectFinder";
+import { FindRectsHeuristic, TYPE_FIND_RECTS_HEURISTIC } from "./FindRectsHeuristic";
+import LargestRectLLUR from "./LargestRectLLUR";
+
+const TYPE: string = 'FindRectsVH';
 
 /**
  * Vertical Horizontal
  */
-@component<FindRectsHeuristic>(TYPE_FIND_RECTS_HEURISTIC, TYPE_FIND_RECTS_VH)
+@component<FindRectsHeuristic>(TYPE_FIND_RECTS_HEURISTIC, TYPE)
 export default class FindRectsVH implements FindRectsHeuristic {
+    public static readonly TYPE: string = TYPE;
+    public readonly type: string = TYPE;
+
     private rectFinder: RectFinder;
 
     constructor(
-        @inject(TYPE_RECT_FINDER) rectFinder: RectFinder
+        @inject(_RectFinder.TYPE) rectFinder: RectFinder
     ) {
         this.rectFinder = rectFinder;
     }
@@ -51,7 +52,7 @@ export default class FindRectsVH implements FindRectsHeuristic {
         }
 
         let input: LargestRectInput =
-            new LargestRectInput(TYPE_LARGEST_RECT_LLUR, matrix, search, params);
+            new LargestRectInput(LargestRectLLUR.TYPE, matrix, search, params);
 
         let biggest: Rect =
             this.rectFinder.largest(input).rect;

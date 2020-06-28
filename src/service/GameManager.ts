@@ -1,9 +1,10 @@
 import { service } from "inversify.config";
 import KeyValuePair from "model/KeyValuePair";
 
-export const TYPE_GAME_MANAGER: string = 'GameManager';
+export const TYPE: string = 'GameManager';
 
 export interface GameManager {
+    type: string;
     getTime(): number;
     getRoom(name: string): Room;
     getRooms(): KeyValuePair<string, Room>[];
@@ -14,8 +15,11 @@ export interface GameManager {
     getObjectById<T>(id: Id<T> | string): T | null;
 };
 
-@service<GameManager>(TYPE_GAME_MANAGER)
+@service<GameManager>(TYPE)
 export class _GameManager implements GameManager {
+    public static readonly TYPE: string = TYPE;
+    public readonly type: string = TYPE;
+
     public getTime(): number {
         return this.getGame().time;
     }

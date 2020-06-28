@@ -5,6 +5,6 @@ export const TYPE_PROCESSOR_SUPPLIER: string = 'ProcessorSupplier';
 export interface ProcessorSupplierOptions { }
 
 export interface ProcessorSupplier {
-    TYPE: string;
+    type: string;
     get(options: ProcessorSupplierOptions): Processor
 }

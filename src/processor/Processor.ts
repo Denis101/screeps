@@ -12,6 +12,7 @@ export interface ProcessorOutput {
 }
 
 export interface Processor {
+    type: string;
     process(input: ProcessorInput): ProcessorOutput;
 }
 

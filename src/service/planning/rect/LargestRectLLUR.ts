@@ -1,4 +1,4 @@
-import { injectable } from 'inversify';
+import { component } from 'inversify.config';
 
 import Stack from 'collection/Stack';
 import MatrixCache from 'collection/MatrixCache';
@@ -9,15 +9,17 @@ import NumberPair from 'model/NumberPair';
 import LargestRectInput from './model/LargestRectInput';
 import LargestRectOutput from './model/LargestRectOutput';
 import { LargestRectHeuristic, TYPE_LARGEST_RECT_HEURISTIC } from './LargestRectHeuristic';
-import { component } from 'inversify.config';
 
-export const TYPE_LARGEST_RECT_LLUR: string = 'LargestRectLLUR';
+const TYPE: string = 'LargestRectLLUR';
 
 /**
  * Lower Left Upper Right
  */
-@component<LargestRectHeuristic>(TYPE_LARGEST_RECT_HEURISTIC, TYPE_LARGEST_RECT_LLUR)
+@component<LargestRectHeuristic>(TYPE_LARGEST_RECT_HEURISTIC, TYPE)
 export default class LargestRectLLUR implements LargestRectHeuristic {
+    public static readonly TYPE: string = TYPE;
+    public readonly type: string = TYPE;
+
     execute(input: LargestRectInput): LargestRectOutput {
         const stack: Stack<NumberPair> = new Stack();
         const cache: MatrixCache<number> = new MatrixCache(input.search.w, 0, TERRAIN_MASK_WALL);

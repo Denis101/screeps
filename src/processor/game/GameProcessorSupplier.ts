@@ -3,15 +3,17 @@ import { ProcessorSupplier, ProcessorSupplierOptions, TYPE_PROCESSOR_SUPPLIER } 
 import { Processor, TYPE_PROCESSOR } from "processor/Processor";
 import { factoryType, component } from "inversify.config";
 
-export const TYPE_GAME_PROCESSOR_SUPPLIER: string = 'GameProcessorSupplier';
+const TYPE: string = 'GameProcessorSupplier';
 
 export interface GameProcessorSupplierOptions extends ProcessorSupplierOptions {
     type: string;
 }
 
-@component<ProcessorSupplier>(TYPE_PROCESSOR_SUPPLIER, TYPE_GAME_PROCESSOR_SUPPLIER)
+@component<ProcessorSupplier>(TYPE_PROCESSOR_SUPPLIER, TYPE)
 export class GameProcessorSupplier implements ProcessorSupplier {
-    public readonly TYPE: string = TYPE_GAME_PROCESSOR_SUPPLIER;
+    public static readonly TYPE: string = TYPE;
+    public readonly type: string = TYPE;
+
     private _factory: (named: string) => Processor;
 
     constructor(

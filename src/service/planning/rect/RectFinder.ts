@@ -1,5 +1,5 @@
 import { inject } from "inversify";
-import { service } from "inversify.config";
+import { service, factoryType } from "inversify.config";
 
 import LargestRectInput from "./model/LargestRectInput";
 import LargestRectOutput from "./model/LargestRectOutput";
@@ -9,21 +9,25 @@ import FindRectsInput from "./model/FindRectsInput";
 import FindRectsOutput from "./model/FindRectsOutput";
 import { FindRectsHeuristic, TYPE_FIND_RECTS_HEURISTIC } from "./FindRectsHeuristic";
 
-export const TYPE_RECT_FINDER: string = 'RectFinder';
+const TYPE: string = 'RectFinder';
 
 export interface RectFinder {
+    type: string;
     rects(input: FindRectsInput): FindRectsOutput;
     largest(input: LargestRectInput): LargestRectOutput;
 }
 
-@service<RectFinder>(TYPE_RECT_FINDER)
+@service<RectFinder>(TYPE)
 export class _RectFinder implements RectFinder {
+    public static readonly TYPE: string = TYPE;
+    public readonly type: string = TYPE;
+
     private _findRectsFactory: (name: string) => FindRectsHeuristic;
     private _largestRectFactory: (name: string) => LargestRectHeuristic;
 
     constructor(
-        @inject(TYPE_FIND_RECTS_HEURISTIC) findRectsFactory: (name: string) => FindRectsHeuristic,
-        @inject(TYPE_LARGEST_RECT_HEURISTIC) largestRectFactory: (name: string) => LargestRectHeuristic
+        @inject(factoryType(TYPE_FIND_RECTS_HEURISTIC)) findRectsFactory: (name: string) => FindRectsHeuristic,
+        @inject(factoryType(TYPE_LARGEST_RECT_HEURISTIC)) largestRectFactory: (name: string) => LargestRectHeuristic
     ) {
         this._findRectsFactory = findRectsFactory;
         this._largestRectFactory = largestRectFactory;

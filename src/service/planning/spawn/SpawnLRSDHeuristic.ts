@@ -2,32 +2,34 @@
  * Largest Rectangle Shortest Distance
  */
 
-import { injectable, inject } from "inversify";
+import { inject } from "inversify";
+import { component } from "inversify.config";
+
+import RoomUtils from "utils/RoomUtils";
 import Matrix from "collection/Matrix";
 import Rect from "model/Rect";
+import SourceMeta from "model/SourceMeta";
 import TerrainConverter from "utils/TerrainConverter";
 
 import SpawnLocationInput from "./model/SpawnLocationInput";
 import SpawnLocationOutput from "./model/SpawnLocationOutput";
-import { SpawnLocationHeuristic } from "./SpawnLocationHeuristic";
+import { SpawnLocationHeuristic, TYPE_SPAWN_LOCATION_HEURISTIC } from "./SpawnLocationHeuristic";
 
 import RectSearch from "../rect/model/RectSearch";
-import { RectFinder, TYPE_RECT_FINDER } from "../rect/RectFinder";
-import RoomUtils from "utils/RoomUtils";
-import SourceMeta from "model/SourceMeta";
 import FindRectsInput from "../rect/model/FindRectsInput";
-import { TYPE_FIND_RECTS_VH } from "../rect/FindRectsVH";
+import { RectFinder, _RectFinder } from "../rect/RectFinder";
+import FindRectsVH from "../rect/FindRectsVH";
 
-export const TYPE_SPAWN_LRSD: string = 'SpawnLRSDFinder';
+const TYPE: string = 'SpawnLRSDHeuristic';
 
-export interface SpawnLRSDHeuristic extends SpawnLocationHeuristic { }
-
-@injectable()
-export class _SpawnLRSDHeuristic implements SpawnLRSDHeuristic {
+@component<SpawnLocationHeuristic>(TYPE_SPAWN_LOCATION_HEURISTIC, TYPE)
+export class SpawnLRSDHeuristic implements SpawnLocationHeuristic {
+    public static TYPE: string = TYPE;
+    public readonly type: string = TYPE;
     private rectFinder: RectFinder;
 
     public constructor(
-        @inject(TYPE_RECT_FINDER) rectFinder: RectFinder
+        @inject(_RectFinder.TYPE) rectFinder: RectFinder
     ) {
         this.rectFinder = rectFinder;
     }
@@ -47,7 +49,7 @@ export class _SpawnLRSDHeuristic implements SpawnLRSDHeuristic {
         const rectSearch: RectSearch =
             RectSearch.fromCoords(0, 0, matrix.size(), matrix.size());
         const findRectsInput: FindRectsInput =
-            new FindRectsInput(TYPE_FIND_RECTS_VH, matrix, rectSearch, input.minBaseSize);
+            new FindRectsInput(FindRectsVH.TYPE, matrix, rectSearch, input.minBaseSize);
         const { rects } = this.rectFinder.rects(findRectsInput);
 
         const sources: SourceMeta[] = RoomUtils.getSourceMeta(input.room);

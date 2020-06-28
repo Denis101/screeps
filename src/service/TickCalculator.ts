@@ -1,15 +1,19 @@
 import { service } from "inversify.config";
 import Timing from "model/Timing";
 
-export const TYPE_TICK_CALCULATOR: string = 'TickCalculator';
+export const TYPE: string = 'TickCalculator';
 
 export interface TickCalculator {
+    type: string;
     getInitialTiming(sampleRate: number): Timing;
     calculate(sampleRate: number, timing: Timing): Timing;
 }
 
-@service<TickCalculator>(TYPE_TICK_CALCULATOR)
+@service<TickCalculator>(TYPE)
 export class _TickCalculator implements TickCalculator {
+    public static readonly TYPE: string = TYPE;
+    public readonly type: string = TYPE;
+
     public getInitialTiming(sampleRate: number): Timing {
         const lastTickMs: number = Math.floor(sampleRate + (sampleRate / 10));
         return new Timing(Date.now() - lastTickMs, lastTickMs / 1000, 0, 0);

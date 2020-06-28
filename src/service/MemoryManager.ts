@@ -5,13 +5,14 @@ import { Messaging } from "messaging";
 import ScreepsMemory from "screeps/ScreepsMemory";
 import KeyValuePair from "model/KeyValuePair";
 
-import { GameManager, TYPE_GAME_MANAGER } from "service/GameManager";
+import { GameManager, _GameManager } from "service/GameManager";
 import ScreepsRoomMemory from "screeps/ScreepsRoomMemory";
 import { ProcessorOutput } from "processor/Processor";
 
-export const TYPE_MEMORY_MANAGER: string = 'MemoryManager';
+export const TYPE: string = 'MemoryManager';
 
 export interface MemoryManager {
+    type: string;
     isDebug(): boolean;
     getMessageChannel(channel: number): Messaging.Message[];
     setMessageChannel(channel: number, messages: Messaging.Message[]): void;
@@ -25,12 +26,15 @@ export interface MemoryManager {
     prune(): void;
 };
 
-@service<MemoryManager>(TYPE_MEMORY_MANAGER)
+@service<MemoryManager>(TYPE)
 export class _MemoryManager implements MemoryManager {
+    public static readonly TYPE: string = TYPE;
+    public readonly type: string = TYPE;
+
     private gameManager: GameManager;
 
     constructor(
-        @inject(TYPE_GAME_MANAGER) gameManager: GameManager
+        @inject(_GameManager.TYPE) gameManager: GameManager
     ) {
         this.gameManager = gameManager;
 
