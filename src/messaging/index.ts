@@ -1,6 +1,6 @@
 import container from 'inversify.config';
-import { GameManager, TYPE_GAME_MANAGER } from 'service/GameManager';
-import { MemoryManager, TYPE_MEMORY_MANAGER } from 'service/MemoryManager';
+import { GameManager, GameManagerImpl } from 'service/GameManager';
+import { MemoryManager, MemoryManagerImpl } from 'service/MemoryManager';
 
 export namespace Messaging {
     export interface MessageReceiver {
@@ -15,9 +15,9 @@ export namespace Messaging {
 
     export function sendMessage(sender: string, receiver: string, expire: number, payload: object): number {
         const gameManager: GameManager =
-            container.get<GameManager>(TYPE_GAME_MANAGER);
+            container.get<GameManager>(GameManagerImpl.TYPE);
         const memoryManager: MemoryManager =
-            container.get<MemoryManager>(TYPE_MEMORY_MANAGER);
+            container.get<MemoryManager>(MemoryManagerImpl.TYPE);
         const AB: number = 1 - (gameManager.getTime() & 1);
 
         if (memoryManager.isDebug()) {
@@ -39,9 +39,9 @@ export namespace Messaging {
 
     export function receiveMessage(sender: string, tick: number, payload: object): boolean {
         const gameManager: GameManager =
-            container.get<GameManager>(TYPE_GAME_MANAGER);
+            container.get<GameManager>(GameManagerImpl.TYPE);
         const memoryManager: MemoryManager =
-            container.get<MemoryManager>(TYPE_MEMORY_MANAGER);
+            container.get<MemoryManager>(MemoryManagerImpl.TYPE);
         const AB: number = gameManager.getTime() & 1;
 
         if (memoryManager.isDebug()) {

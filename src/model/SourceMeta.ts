@@ -52,7 +52,7 @@ export default class SourceMeta {
     }
 
     public get memory(): ScreepsSourceMemory {
-        return (<ScreepsRoomMemory>this.room.memory).sources[this._source.id];
+        return (this.room.memory as ScreepsRoomMemory).sources[this._source.id];
     }
 
     public static fromSource(source: Source): SourceMeta {

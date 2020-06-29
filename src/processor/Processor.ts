@@ -27,10 +27,10 @@ export function wrapProcess(
     });
 
     return {
-        processorType: (output && (<any>output).processorType) || undefined,
-        payload: (output && (<any>output).payload) || undefined,
-        children: (output && (<any>output).children) || [],
-        timing: timing,
+        processorType: (output && (output as any).processorType) || undefined,
+        payload: (output && (output as any).payload) || undefined,
+        children: (output && (output as any).children) || [],
+        timing,
     };
 }
 

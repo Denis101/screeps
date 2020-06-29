@@ -1,4 +1,4 @@
-const BASE_PATTERNS = {
+const BASE_PATTERNS: object = {
     "HORIZONTAL_STRAIGHT": {
         "w": 19,
         "h": 7,

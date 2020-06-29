@@ -5,9 +5,9 @@ import { Processor, TYPE_PROCESSOR, wrapProcess, ProcessorInput, ProcessorOutput
 import { TYPE_PROCESSOR_SUPPLIER } from "processor/ProcessorSupplier";
 import { RoomProcessorSupplier } from "processor/room/RoomProcessorSupplier";
 
-import { GameManager, _GameManager } from "service/GameManager";
-import { MemoryManager, _MemoryManager } from "service/MemoryManager";
-import { MessageBus, _MessageBus } from "service/MessageBus";
+import { GameManager, GameManagerImpl } from "service/GameManager";
+import { MemoryManager, MemoryManagerImpl } from "service/MemoryManager";
+import { MessageBus, MessageBusImpl } from "service/MessageBus";
 import ScreepsRoomMemory from "screeps/ScreepsRoomMemory";
 
 const TYPE: string = 'GamePrimaryProcessor';
@@ -23,9 +23,9 @@ export class GamePrimaryProcessor implements Processor {
     private supplier: RoomProcessorSupplier;
 
     public constructor(
-        @inject(_GameManager.TYPE) gameManager: GameManager,
-        @inject(_MemoryManager.TYPE) memoryManager: MemoryManager,
-        @inject(_MessageBus.TYPE) messageBus: MessageBus,
+        @inject(GameManagerImpl.TYPE) gameManager: GameManager,
+        @inject(MemoryManagerImpl.TYPE) memoryManager: MemoryManager,
+        @inject(MessageBusImpl.TYPE) messageBus: MessageBus,
         @inject(TYPE_PROCESSOR_SUPPLIER) @named(RoomProcessorSupplier.TYPE) supplier: RoomProcessorSupplier
     ) {
         this.gameManager = gameManager;
@@ -47,7 +47,7 @@ export class GamePrimaryProcessor implements Processor {
                 const discovered: boolean =
                     this.memoryManager.hasRoom(room.name);
                 const owned: boolean = discovered && memory && memory.owned;
-                const processor = this.supplier.get({
+                const processor: Processor = this.supplier.get({
                     discovered,
                     owned,
                 });

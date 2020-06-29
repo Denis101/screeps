@@ -4,8 +4,8 @@ import _ from "lodash";
 
 import { Messaging } from "messaging";
 
-import { GameManager, _GameManager } from "service/GameManager";
-import { MemoryManager, _MemoryManager } from "service/MemoryManager";
+import { GameManager, GameManagerImpl } from "service/GameManager";
+import { MemoryManager, MemoryManagerImpl } from "service/MemoryManager";
 import ScreepsRoomObject from "screeps/ScreepsRoomObject";
 
 export const TYPE: string = 'MessageBus';
@@ -17,7 +17,7 @@ export interface MessageBus {
 };
 
 @service<MessageBus>(TYPE)
-export class _MessageBus implements MessageBus {
+export class MessageBusImpl implements MessageBus {
     public static readonly TYPE: string = TYPE;
     public readonly type: string = TYPE;
 
@@ -25,8 +25,8 @@ export class _MessageBus implements MessageBus {
     private memoryManager: MemoryManager;
 
     public constructor(
-        @inject(_GameManager.TYPE) gameManager: GameManager,
-        @inject(_MemoryManager.TYPE) memoryManager: MemoryManager
+        @inject(GameManagerImpl.TYPE) gameManager: GameManager,
+        @inject(MemoryManagerImpl.TYPE) memoryManager: MemoryManager
     ) {
         this.gameManager = gameManager;
         this.memoryManager = memoryManager;
@@ -54,6 +54,6 @@ export class _MessageBus implements MessageBus {
             return false;
         }
 
-        return (<ScreepsRoomObject>obj).receiveMessage(message.sender, message.tick, message.payload);
+        return (obj as ScreepsRoomObject).receiveMessage(message.sender, message.tick, message.payload);
     }
 }

@@ -4,24 +4,23 @@ import container from './inversify.config';
 import { TYPE_PROCESSOR_SUPPLIER } from 'processor/ProcessorSupplier';
 import { GameProcessorSupplier } from 'processor/game/GameProcessorSupplier';
 
-import { MemoryManager, _MemoryManager } from 'service/MemoryManager';
+import { MemoryManager, MemoryManagerImpl } from 'service/MemoryManager';
 import { Processor } from 'processor/Processor';
 import { injectable, inject, named } from 'inversify';
-import { RoomProcessorSupplier } from 'processor/room/RoomProcessorSupplier';
 import { GamePrimaryProcessor } from 'processor/game/GamePrimaryProcessor';
-import { RoomDiscoveryProcessor } from 'processor/room/RoomDiscoveryProcessor';
+import { GameSegmentBuilderProcessor } from 'processor/game/GameSegmentBuilderProcessor';
 
 interface Bootstrapper {
     loop(): void
 }
 
 @injectable()
-class _Bootstrapper implements Bootstrapper {
+class BootstrapperImpl implements Bootstrapper {
     public memoryManager: MemoryManager;
     public supplier: GameProcessorSupplier;
 
     public constructor(
-        @inject(_MemoryManager.TYPE) memoryManager: MemoryManager,
+        @inject(MemoryManagerImpl.TYPE) memoryManager: MemoryManager,
         @inject(TYPE_PROCESSOR_SUPPLIER) @named(GameProcessorSupplier.TYPE) supplier: GameProcessorSupplier,
     ) {
         this.memoryManager = memoryManager;
@@ -29,13 +28,21 @@ class _Bootstrapper implements Bootstrapper {
     }
 
     public loop(): void {
-        const processor: Processor =
-            this.supplier.get({ type: GamePrimaryProcessor.TYPE });
+        let processor: Processor;
+        switch (this.memoryManager.getMode()) {
+            case "SegmentBuilder":
+                processor = this.supplier.get({ type: GameSegmentBuilderProcessor.TYPE });
+                break;
+            case "Primary":
+            default:
+                processor = this.supplier.get({ type: GamePrimaryProcessor.TYPE });
+        }
+
         this.memoryManager.setProcessorOutput(processor.process({}));
     }
 }
 
-container.bind<Bootstrapper>("Bootstrapper").to(_Bootstrapper);
+container.bind<Bootstrapper>("Bootstrapper").to(BootstrapperImpl);
 export const loop: VoidFunc =
     ErrorMapper.wrapLoop(() =>
         container.get<Bootstrapper>("Bootstrapper").loop());

@@ -5,7 +5,7 @@ import { Messaging } from "messaging";
 import ScreepsMemory from "screeps/ScreepsMemory";
 import KeyValuePair from "model/KeyValuePair";
 
-import { GameManager, _GameManager } from "service/GameManager";
+import { GameManager, GameManagerImpl } from "service/GameManager";
 import ScreepsRoomMemory from "screeps/ScreepsRoomMemory";
 import { ProcessorOutput } from "processor/Processor";
 
@@ -13,11 +13,14 @@ export const TYPE: string = 'MemoryManager';
 
 export interface MemoryManager {
     type: string;
+    getMode(): GameMode;
+    setMode(mode: GameMode): void;
     isDebug(): boolean;
     getMessageChannel(channel: number): Messaging.Message[];
     setMessageChannel(channel: number, messages: Messaging.Message[]): void;
     getAllMessages(): Messaging.Message[][];
     getRoom(name: string): ScreepsRoomMemory;
+    getRoomCount(): number;
     setRoom(name: string, memory: ScreepsRoomMemory): void;
     hasRoom(name: string): boolean;
     getCreep(id: string): CreepMemory;
@@ -28,20 +31,28 @@ export interface MemoryManager {
 };
 
 @service<MemoryManager>(TYPE)
-export class _MemoryManager implements MemoryManager {
+export class MemoryManagerImpl implements MemoryManager {
     public static readonly TYPE: string = TYPE;
     public readonly type: string = TYPE;
 
     private gameManager: GameManager;
 
     constructor(
-        @inject(_GameManager.TYPE) gameManager: GameManager
+        @inject(GameManagerImpl.TYPE) gameManager: GameManager
     ) {
         this.gameManager = gameManager;
 
         if (!this.getAllMessages()) {
             this.getMemory().messages = [];
         }
+    }
+
+    public getMode(): GameMode {
+        return this.getMemory().mode;
+    }
+
+    public setMode(mode: GameMode): void {
+        this.getMemory().mode = mode;
     }
 
     public isDebug(): boolean {
@@ -61,7 +72,11 @@ export class _MemoryManager implements MemoryManager {
     }
 
     public getRoom(name: string): ScreepsRoomMemory {
-        return <ScreepsRoomMemory>this.getMemory().rooms[name];
+        return this.getMemory().rooms[name] as ScreepsRoomMemory;
+    }
+
+    public getRoomCount(): number {
+        return Object.keys(this.getMemory().rooms).length;
     }
 
     public setRoom(name: string, memory: ScreepsRoomMemory): void {
@@ -73,7 +88,7 @@ export class _MemoryManager implements MemoryManager {
             && this.getRoom(name) !== undefined;
     }
 
-    public getCreep(id: string) {
+    public getCreep(id: string): CreepMemory {
         return this.getMemory().creeps[id];
     }
 
@@ -90,7 +105,7 @@ export class _MemoryManager implements MemoryManager {
         this.getMemory().processorOutput = output;
     }
 
-    public prune() {
+    public prune(): void {
         for (let i: number = 0; i < this.getCreeps().length; i++) {
             const gameCreep: KeyValuePair<string, Creep> = this.gameManager.getCreeps()[i];
             if (!gameCreep || !gameCreep.value) {
@@ -100,6 +115,6 @@ export class _MemoryManager implements MemoryManager {
     }
 
     private getMemory(): ScreepsMemory {
-        return <ScreepsMemory>Memory;
+        return Memory as ScreepsMemory;
     }
 }

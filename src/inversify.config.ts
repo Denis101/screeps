@@ -7,7 +7,7 @@ const container: Container = new Container();
  * One-to-one mapping of an interface
  * @param type Interface type
  */
-export function service<I>(type: string) {
+export function service<I>(type: string): (target: any) => void {
     return (target: any) => {
         container.bind<I>(type).to(target);
         injectable()(target);
@@ -19,7 +19,7 @@ export function service<I>(type: string) {
  * @param type Interface type
  * @param named Interface sub-type
  */
-export function component<I>(type: string, named: string) {
+export function component<I>(type: string, named: string): (target: any) => void {
     return (target: any) => {
         container.bind<I>(type).to(target).whenTargetNamed(named);
         injectable()(target);
@@ -31,7 +31,7 @@ export function component<I>(type: string, named: string) {
  * this allows one-to-many mappings of components
  * @param type Interface type
  */
-export function bindFactory<I>(type: string) {
+export function bindFactory<I>(type: string): void {
     container.bind<interfaces.Factory<I>>(factoryType(type))
         .toFactory<I>((context: interfaces.Context): interfaces.Factory<I> => {
             return (named: string) => context.container.getNamed<I>(type, named)

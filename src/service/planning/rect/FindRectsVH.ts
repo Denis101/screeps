@@ -11,7 +11,7 @@ import RectSearch from "./model/RectSearch";
 import RectParameters from "./model/RectParameters";
 import LargestRectInput from "./model/LargestRectInput";
 
-import { RectFinder, _RectFinder } from "./RectFinder";
+import { RectFinder, RectFinderImpl } from "./RectFinder";
 import { FindRectsHeuristic, TYPE_FIND_RECTS_HEURISTIC } from "./FindRectsHeuristic";
 import LargestRectLLUR from "./LargestRectLLUR";
 
@@ -28,7 +28,7 @@ export default class FindRectsVH implements FindRectsHeuristic {
     private rectFinder: RectFinder;
 
     constructor(
-        @inject(_RectFinder.TYPE) rectFinder: RectFinder
+        @inject(RectFinderImpl.TYPE) rectFinder: RectFinder
     ) {
         this.rectFinder = rectFinder;
     }
@@ -51,11 +51,11 @@ export default class FindRectsVH implements FindRectsHeuristic {
             return new FindRectsOutput(prevBiggest.area, [prevBiggest]);
         }
 
-        let input: LargestRectInput =
+        const input: LargestRectInput =
             new LargestRectInput(LargestRectLLUR.TYPE, matrix, search, params);
-
-        let biggest: Rect =
+        const biggest: Rect =
             this.rectFinder.largest(input).rect;
+
         if (params.minArea > biggest.area
             || params.minPerimeter > biggest.perimeter) {
             return new FindRectsOutput(prevBiggest.area, [prevBiggest]);

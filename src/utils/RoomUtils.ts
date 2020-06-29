@@ -8,9 +8,9 @@ export default class RoomUtils {
     }
 
     public static walkableAtArea(room: Room, search: Rect): number {
-        let count: number = 0;
+        const area: Matrix<number> = RoomUtils.terrainAtArea(room, search);
 
-        let area: Matrix<number> = RoomUtils.terrainAtArea(room, search);
+        let count: number = 0;
         for (let y: number = 0; y < area.size(); y++) {
             for (let x: number = 0; x < area.size(); x++) {
                 const value: number = area.get(y).get(x);
@@ -29,12 +29,12 @@ export default class RoomUtils {
 
         const result: number[][] = [];
         for (const y of Object.keys(area)) {
-            result[<any>y - search.top] = [];
-            const row = area[<any>y];
+            result[(y as any) - search.top] = [];
+            const row: any = area[y as any];
             for (const x of Object.keys(row)) {
-                const val: any = row[<any>x][0];
-                const terrain: number = (<string>val) === "wall" ? 1 : 0;
-                result[<any>y - search.top][<any>x - search.left] = terrain;
+                const val: any = row[x as any][0];
+                const terrain: number = (val as string) === "wall" ? 1 : 0;
+                result[(y as any) - search.top][(x as any) - search.left] = terrain;
             }
         }
 

@@ -18,7 +18,7 @@ export interface SpawnLocationFinder {
 }
 
 @service<SpawnLocationFinder>(TYPE)
-export class _SpawnLocationFinder {
+export class SpawnLocationFinderImpl {
     public static readonly TYPE: string = TYPE;
     public readonly type: string = TYPE;
 

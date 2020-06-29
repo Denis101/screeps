@@ -1,5 +1,5 @@
 // tslint:disable:no-conditional-assignment
-import { SourceMapConsumer } from 'source-map';
+import { SourceMapConsumer, MappedPosition } from 'source-map';
 import _ from 'lodash';
 
 export default class ErrorMapper {
@@ -21,13 +21,13 @@ export default class ErrorMapper {
             return this.cache[stack];
         }
 
-        const re = /^\s+at\s+(.+?\s+)?\(?([0-z._\-\\\/]+):(\d+):(\d+)\)?$/gm;
+        const re: RegExp = /^\s+at\s+(.+?\s+)?\(?([0-z._\-\\\/]+):(\d+):(\d+)\)?$/gm;
         let match: RegExpExecArray | null;
-        let outStack = error.toString();
+        let outStack: string = error.toString();
 
         while ((match = re.exec(stack))) {
             if (match[2] === "main") {
-                const pos = this.consumer.originalPositionFor({
+                const pos: MappedPosition = this.consumer.originalPositionFor({
                     column: parseInt(match[4], 10),
                     line: parseInt(match[3], 10)
                 });

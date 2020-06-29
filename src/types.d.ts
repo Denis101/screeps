@@ -7,4 +7,5 @@ type Predicate<T> = (value: T) => boolean;
 type BiPredicate<A, B> = (a: A, b: B) => boolean;
 type TriPredicate<A, B, C> = (a: A, b: B, c: C) => boolean;
 
+type GameMode = "Primary" | "SegmentBuilder";
 type RoomAllocation = "HUB" | "FORTRESS" | "BARRACKS" | "OUTPOST" | "MINE";

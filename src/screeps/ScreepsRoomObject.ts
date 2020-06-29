@@ -1,6 +1,6 @@
 import { Messaging } from "messaging";
 
-const TYPE = 'ScreepsRoomObject';
+const TYPE: string = 'ScreepsRoomObject';
 
 export default class ScreepsRoomObject extends RoomObject implements Messaging.MessageSenderReceiver {
     public static readonly TYPE: string = TYPE;

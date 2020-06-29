@@ -10,7 +10,7 @@ export interface TickCalculator {
 }
 
 @service<TickCalculator>(TYPE)
-export class _TickCalculator implements TickCalculator {
+export class TickCalculatorImpl implements TickCalculator {
     public static readonly TYPE: string = TYPE;
     public readonly type: string = TYPE;
 
@@ -22,7 +22,7 @@ export class _TickCalculator implements TickCalculator {
     public calculate(sampleRate: number, timing: Timing): Timing {
         const millis: number = Date.now();
 
-        let { lastTickMs, lastTick, tickCounter, tickTimeTotal } = timing;
+        let { lastTickMs, lastTick, tickCounter, tickTimeTotal }: Timing = timing;
 
         tickTimeTotal += millis - lastTickMs;
         if (tickCounter >= (sampleRate - 1)) {

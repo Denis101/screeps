@@ -16,7 +16,7 @@ export interface GameManager {
 };
 
 @service<GameManager>(TYPE)
-export class _GameManager implements GameManager {
+export class GameManagerImpl implements GameManager {
     public static readonly TYPE: string = TYPE;
     public readonly type: string = TYPE;
 

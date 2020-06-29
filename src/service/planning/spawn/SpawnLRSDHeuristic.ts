@@ -16,9 +16,10 @@ import SpawnLocationOutput from "./model/SpawnLocationOutput";
 import { SpawnLocationHeuristic, TYPE_SPAWN_LOCATION_HEURISTIC } from "./SpawnLocationHeuristic";
 
 import RectSearch from "../rect/model/RectSearch";
-import FindRectsInput from "../rect/model/FindRectsInput";
-import { RectFinder, _RectFinder } from "../rect/RectFinder";
+import { RectFinder, RectFinderImpl } from "../rect/RectFinder";
 import FindRectsVH from "../rect/FindRectsVH";
+import FindRectsInput from "../rect/model/FindRectsInput";
+import FindRectsOutput from "../rect/model/FindRectsOutput";
 
 const TYPE: string = 'SpawnLRSDHeuristic';
 
@@ -29,7 +30,7 @@ export class SpawnLRSDHeuristic implements SpawnLocationHeuristic {
     private rectFinder: RectFinder;
 
     public constructor(
-        @inject(_RectFinder.TYPE) rectFinder: RectFinder
+        @inject(RectFinderImpl.TYPE) rectFinder: RectFinder
     ) {
         this.rectFinder = rectFinder;
     }
@@ -37,7 +38,7 @@ export class SpawnLRSDHeuristic implements SpawnLocationHeuristic {
     execute(input: SpawnLocationInput): SpawnLocationOutput {
         const matrix: Matrix<number> | null =
             TerrainConverter.toMatrix(
-                (<any>input.room.getTerrain()).getRawBuffer());
+                (input.room.getTerrain() as any).getRawBuffer());
 
         if (matrix === null) {
             // todo; return some sort of error output
@@ -50,7 +51,7 @@ export class SpawnLRSDHeuristic implements SpawnLocationHeuristic {
             RectSearch.fromCoords(0, 0, matrix.size(), matrix.size());
         const findRectsInput: FindRectsInput =
             new FindRectsInput(FindRectsVH.TYPE, matrix, rectSearch, input.minBaseSize);
-        const { rects } = this.rectFinder.rects(findRectsInput);
+        const { rects }: FindRectsOutput = this.rectFinder.rects(findRectsInput);
 
         const sources: SourceMeta[] = RoomUtils.getSourceMeta(input.room);
         const pathTotals: number[] = [];

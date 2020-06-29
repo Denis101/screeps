@@ -18,7 +18,7 @@ export interface RectFinder {
 }
 
 @service<RectFinder>(TYPE)
-export class _RectFinder implements RectFinder {
+export class RectFinderImpl implements RectFinder {
     public static readonly TYPE: string = TYPE;
     public readonly type: string = TYPE;
 

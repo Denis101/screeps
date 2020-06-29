@@ -3,14 +3,14 @@ import { component } from "inversify.config";
 
 import { Processor, TYPE_PROCESSOR, wrapProcess, ProcessorInput, ProcessorOutput } from "processor/Processor";
 
-import { SpawnLocationFinder, _SpawnLocationFinder } from "service/planning/spawn/SpawnLocationFinder";
+import { SpawnLocationFinder, SpawnLocationFinderImpl } from "service/planning/spawn/SpawnLocationFinder";
 import { SpawnLRSDHeuristic } from "service/planning/spawn/SpawnLRSDHeuristic";
 import SpawnLocationOutput from "service/planning/spawn/model/SpawnLocationOutput";
 import SpawnLocationInput from "service/planning/spawn/model/SpawnLocationInput";
 
 import RectParameters from "service/planning/rect/model/RectParameters";
 import RoomProcessorInput from "./RoomProcessorInput";
-import { MemoryManager, _MemoryManager } from "service/MemoryManager";
+import { MemoryManager, MemoryManagerImpl } from "service/MemoryManager";
 import RoomUtils from "utils/RoomUtils";
 import SourceUtils from "utils/SourceUtils";
 import { SampledRateMetric } from "screeps/ScreepsRoomMemory";
@@ -26,16 +26,16 @@ export class RoomDiscoveryProcessor implements Processor {
     private spawnLocationFinder: SpawnLocationFinder;
 
     public constructor(
-        @inject(_MemoryManager.TYPE) memoryManager: MemoryManager,
-        @inject(_SpawnLocationFinder.TYPE) spawnLocationFinder: SpawnLocationFinder
+        @inject(MemoryManagerImpl.TYPE) memoryManager: MemoryManager,
+        @inject(SpawnLocationFinderImpl.TYPE) spawnLocationFinder: SpawnLocationFinder
     ) {
         this.memoryManager = memoryManager;
         this.spawnLocationFinder = spawnLocationFinder;
     }
 
-    process(input: RoomProcessorInput): ProcessorOutput {
+    process(processorInput: RoomProcessorInput): ProcessorOutput {
         return wrapProcess((input: ProcessorInput): ProcessorOutput => {
-            const room: Room = (<RoomProcessorInput>input).room;
+            const room: Room = (input as RoomProcessorInput).room;
             const output: SpawnLocationOutput = this.spawnLocationFinder.find(
                 new SpawnLocationInput(
                     SpawnLRSDHeuristic.TYPE, room, new RectParameters(133, 1)));
@@ -65,7 +65,7 @@ export class RoomDiscoveryProcessor implements Processor {
                 sources,
                 minerals: [],
                 controller: room.controller?.id,
-                home: room.controller?.my || false,
+                home: this.memoryManager.getRoomCount() <= 0, // TODO; check for existing spawn too
                 owned: room.controller?.my || false,
                 allocation: 'HUB', // TODO; Allocate based on spawn location output
                 bounds: output.rect,
@@ -76,7 +76,7 @@ export class RoomDiscoveryProcessor implements Processor {
                     },
                     desired: {
                         spawnLocation: output.location,
-                        roads: roads,
+                        roads,
                     },
                 },
                 metrics: {
@@ -93,6 +93,6 @@ export class RoomDiscoveryProcessor implements Processor {
                 payload: undefined,
                 timing: undefined
             };
-        }, input);
+        }, processorInput);
     }
 }
