@@ -3,6 +3,7 @@ import Rect from "model/Rect";
 
 export interface RoomState {
     spawnLocation: RoomPosition | null;
+    extensionCount: number;
     roads: PathStep[][];
 }
 
@@ -12,11 +13,13 @@ export class SampledRateMetric {
     public rate: number = 0;
 }
 
+export interface ScreepsSourceMemories {
+    [id: string]: ScreepsSourceMemory
+}
+
 export default interface ScreepsRoomMemory extends RoomMemory {
     name: string;
-    sources: {
-        [id: string]: ScreepsSourceMemory
-    };
+    sources: ScreepsSourceMemories,
     minerals: Id<Mineral>[];
     controller: Id<StructureController> | undefined;
     home: boolean;

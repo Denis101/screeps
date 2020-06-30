@@ -22,7 +22,7 @@ export class GameProcessorSupplier implements ProcessorSupplier {
         this._factory = factory;
     }
 
-    get(options: GameProcessorSupplierOptions): Processor {
+    public get(options: GameProcessorSupplierOptions): Processor {
         return this._factory(options.type);
     }
 }

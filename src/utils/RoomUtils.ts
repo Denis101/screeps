@@ -1,6 +1,7 @@
 import Matrix from "collection/Matrix";
 import Rect from "model/Rect";
 import SourceMeta from "model/SourceMeta";
+import ScreepsStructureMemory from "screeps/ScreepsStructureMemory";
 
 export default class RoomUtils {
     public static getSourceMeta(room: Room): SourceMeta[] {
@@ -23,6 +24,18 @@ export default class RoomUtils {
         return count;
     }
 
+    public static distancesToHostileStructures(room: Room, pos: RoomPosition): number[] {
+        const result: number[] = [];
+        const structs: AnyOwnedStructure[] = room.find(FIND_HOSTILE_STRUCTURES);
+
+        for (let i: number = 0; i < structs.length; i++) {
+            const path: PathStep[] = room.findPath(pos, structs[i].pos);
+            result[i] = path.length;
+        }
+
+        return result;
+    }
+
     public static terrainAtArea(room: Room, search: Rect): Matrix<number> {
         const area: LookAtResultMatrix<LOOK_TERRAIN> =
             room.lookForAtArea(LOOK_TERRAIN, search.top, search.left, search.bottom, search.right);
@@ -39,5 +52,24 @@ export default class RoomUtils {
         }
 
         return Matrix.fromArray(result);
+    }
+
+    public static structuresAtArea(room: Room, search: Rect): Structure[] {
+        const area: LookForAtAreaResultArray<Structure<StructureConstant>, LOOK_STRUCTURES> =
+            room.lookForAtArea(LOOK_STRUCTURES, search.top, search.left, search.bottom, search.right, true);
+        const result: Structure[] = [];
+        for (const v of area) {
+            result.push(v.structure);
+        }
+
+        return result;
+    }
+
+    public static getStructureMemory(structures: Structure[]): ScreepsStructureMemory[] {
+        return structures.map((s: Structure) => ({
+            id: s.id,
+            pos: s.pos,
+            type: s.structureType,
+        }));
     }
 }

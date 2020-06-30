@@ -38,7 +38,7 @@ class BootstrapperImpl implements Bootstrapper {
                 processor = this.supplier.get({ type: GamePrimaryProcessor.TYPE });
         }
 
-        this.memoryManager.setProcessorOutput(processor.process({}));
+        this.memoryManager.setProcessorOutput(processor.process({}) || {});
     }
 }
 

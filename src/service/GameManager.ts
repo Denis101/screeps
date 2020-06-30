@@ -1,5 +1,6 @@
 import { service } from "inversify.config";
 import KeyValuePair from "model/KeyValuePair";
+import ScreepsCreep from "screeps/ScreepsCreep";
 
 export const TYPE: string = 'GameManager';
 
@@ -8,8 +9,8 @@ export interface GameManager {
     getTime(): number;
     getRoom(name: string): Room;
     getRooms(): KeyValuePair<string, Room>[];
-    getCreep(id: Id<Creep>): Creep;
-    getCreeps(): KeyValuePair<string, Creep>[];
+    getCreep(id: Id<Creep>): ScreepsCreep;
+    getCreeps(): KeyValuePair<string, ScreepsCreep>[];
     getFlag(id: string): Flag;
     getFlags(): KeyValuePair<string, Flag>[];
     getObjectById<T>(id: Id<T> | string): T | null;
@@ -33,13 +34,13 @@ export class GameManagerImpl implements GameManager {
             .map((k: string) => new KeyValuePair(k, this.getGame().rooms[k]));
     }
 
-    public getCreep(id: Id<Creep>): Creep {
-        return this.getGame().creeps[id];
+    public getCreep(id: Id<Creep>): ScreepsCreep {
+        return this.getGame().creeps[id] as ScreepsCreep;
     }
 
-    public getCreeps(): KeyValuePair<string, Creep>[] {
+    public getCreeps(): KeyValuePair<string, ScreepsCreep>[] {
         return Object.keys(this.getGame().creeps)
-            .map((k: string) => new KeyValuePair(k, this.getGame().creeps[k]));
+            .map((k: string) => new KeyValuePair(k, this.getGame().creeps[k] as ScreepsCreep));
     }
 
     public getFlag(id: string): Flag {

@@ -31,24 +31,16 @@ export default class SourceMeta {
         return this.walkable + (ArrayUtils.sum(this.distanceToHostileStructures) / 10);
     }
 
-    public get distanceToHostileStructures(): number[] {
-        const result: number[] = [];
-        const structs: AnyOwnedStructure[] = this.room.find(FIND_HOSTILE_STRUCTURES);
-
-        for (let i: number = 0; i < structs.length; i++) {
-            const path: PathStep[] = this.room.findPath(this.pos, structs[i].pos);
-            result[i] = path.length;
-        }
-
-        return result;
-    }
-
     public get walkable(): number {
         return RoomUtils.walkableAtArea(this.room, new Rect(
             this._source.pos.x - 1,
             this._source.pos.y - 1,
             3, 3
         ));
+    }
+
+    public get distanceToHostileStructures(): number[] {
+        return RoomUtils.distancesToHostileStructures(this.room, this.pos);
     }
 
     public get memory(): ScreepsSourceMemory {

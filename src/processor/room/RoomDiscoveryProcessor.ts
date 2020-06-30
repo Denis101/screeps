@@ -1,7 +1,7 @@
 import { inject } from "inversify";
 import { component } from "inversify.config";
 
-import { Processor, TYPE_PROCESSOR, wrapProcess, ProcessorInput, ProcessorOutput } from "processor/Processor";
+import { Processor, TYPE_PROCESSOR, timed } from "processor/Processor";
 
 import { SpawnLocationFinder, SpawnLocationFinderImpl } from "service/planning/spawn/SpawnLocationFinder";
 import { SpawnLRSDHeuristic } from "service/planning/spawn/SpawnLRSDHeuristic";
@@ -33,66 +33,55 @@ export class RoomDiscoveryProcessor implements Processor {
         this.spawnLocationFinder = spawnLocationFinder;
     }
 
-    process(processorInput: RoomProcessorInput): ProcessorOutput {
-        return wrapProcess((input: ProcessorInput): ProcessorOutput => {
-            const room: Room = (input as RoomProcessorInput).room;
-            const output: SpawnLocationOutput = this.spawnLocationFinder.find(
-                new SpawnLocationInput(
-                    SpawnLRSDHeuristic.TYPE, room, new RectParameters(133, 1)));
+    @timed
+    process(input: RoomProcessorInput): void {
+        const room: Room = input.room;
+        const output: SpawnLocationOutput = this.spawnLocationFinder.find(
+            new SpawnLocationInput(
+                SpawnLRSDHeuristic.TYPE, room, new RectParameters(133, 1)));
 
-            const controller: StructureController | undefined = room.controller;
-            if (!controller) {
-                return {
-                    processorType: this.type,
-                    children: [],
-                    payload: undefined,
-                    timing: undefined
-                };
-            }
+        const controller: StructureController | undefined = room.controller;
+        if (!controller) {
+            return;
+        }
 
-            const roads: PathStep[][] = [
-                room.findPath(output.location, controller.pos)
-            ];
+        const roads: PathStep[][] = [
+            room.findPath(output.location, controller.pos)
+        ];
 
-            const sources: any = {};
-            for (const meta of RoomUtils.getSourceMeta(room)) {
-                sources[meta.id] = SourceUtils.toMemory(meta);
-                roads.push(room.findPath(output.location, meta.pos));
-            }
+        const sources: any = {};
+        for (const meta of RoomUtils.getSourceMeta(room)) {
+            sources[meta.id] = SourceUtils.toMemory(meta);
+            roads.push(room.findPath(output.location, meta.pos));
+        }
 
-            this.memoryManager.setRoom(room.name, {
-                name: room.name,
-                sources,
-                minerals: [],
-                controller: room.controller?.id,
-                home: this.memoryManager.getRoomCount() <= 0, // TODO; check for existing spawn too
-                owned: room.controller?.my || false,
-                allocation: 'HUB', // TODO; Allocate based on spawn location output
-                bounds: output.rect,
-                state: {
-                    current: {
-                        spawnLocation: null,
-                        roads: [],
-                    },
-                    desired: {
-                        spawnLocation: output.location,
-                        roads,
-                    },
+        this.memoryManager.setRoom(room.name, {
+            name: room.name,
+            sources,
+            minerals: [],
+            controller: room.controller?.id,
+            home: this.memoryManager.getRoomCount() <= 0, // TODO; check for existing spawn too
+            owned: room.controller?.my || false,
+            allocation: 'HUB', // TODO; Allocate based on spawn location output
+            bounds: output.rect,
+            state: {
+                current: {
+                    spawnLocation: null,
+                    extensionCount: 0,
+                    roads: [],
                 },
-                metrics: {
-                    energy: {
-                        harvest: new SampledRateMetric(),
-                        used: new SampledRateMetric(),
-                    }
+                desired: {
+                    spawnLocation: output.location,
+                    extensionCount: 0,
+                    roads,
                 },
-            });
-
-            return {
-                processorType: this.type,
-                children: [],
-                payload: undefined,
-                timing: undefined
-            };
-        }, processorInput);
+            },
+            metrics: {
+                energy: {
+                    harvest: new SampledRateMetric(),
+                    used: new SampledRateMetric(),
+                }
+            },
+        });
     }
 }

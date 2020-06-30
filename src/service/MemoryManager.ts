@@ -8,8 +8,13 @@ import KeyValuePair from "model/KeyValuePair";
 import { GameManager, GameManagerImpl } from "service/GameManager";
 import ScreepsRoomMemory from "screeps/ScreepsRoomMemory";
 import { ProcessorOutput } from "processor/Processor";
+import ScreepsStructureMemory from "screeps/ScreepsStructureMemory";
 
 export const TYPE: string = 'MemoryManager';
+
+export interface StructureSegments {
+    [name: string]: ScreepsStructureMemory[]
+}
 
 export interface MemoryManager {
     type: string;
@@ -25,6 +30,7 @@ export interface MemoryManager {
     hasRoom(name: string): boolean;
     getCreep(id: string): CreepMemory;
     getCreeps(): KeyValuePair<string, CreepMemory>[];
+    setSegments(segments: StructureSegments): void;
     getProcessorOutput(): ProcessorOutput;
     setProcessorOutput(output: ProcessorOutput): void;
     prune(): void;
@@ -95,6 +101,10 @@ export class MemoryManagerImpl implements MemoryManager {
     public getCreeps(): KeyValuePair<string, CreepMemory>[] {
         return Object.keys(this.getMemory().creeps)
             .map((k: string) => new KeyValuePair(k, this.getMemory().creeps[k]));
+    }
+
+    public setSegments(segments: StructureSegments): void {
+        this.getMemory().segments = segments;
     }
 
     public getProcessorOutput(): ProcessorOutput {

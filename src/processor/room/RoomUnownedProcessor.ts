@@ -1,5 +1,5 @@
 import { component } from "inversify.config";
-import { Processor, TYPE_PROCESSOR, wrapProcess, ProcessorInput, ProcessorOutput } from "processor/Processor";
+import { Processor, TYPE_PROCESSOR, timed } from "processor/Processor";
 
 const TYPE: string = 'RoomUnownedProcessor';
 
@@ -8,9 +8,8 @@ export class RoomUnownedProcessor implements Processor {
     public static readonly TYPE: string = TYPE;
     public readonly type: string = TYPE;
 
-    process(input: ProcessorInput): ProcessorOutput {
-        return wrapProcess((): void => {
-            throw new Error("Method not implemented.");
-        }, input);
+    @timed
+    process(): void {
+        console.log('room owned processor');
     }
 }
